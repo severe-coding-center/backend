@@ -18,24 +18,43 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	// Web + JPA + Security
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// Kakao OAuth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// WebClient
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	// MySQL
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	//Mysql
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	runtimeOnly 'com.mysql:mysql-connector-j'
+	// PostConstruct 오류 해결용
+	implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
 
-	//Webflux
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	// Test
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	//thymeleaf
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	// (선택) JWT 충돌 방지용
+	constraints {
+		implementation('io.jsonwebtoken:jjwt-api:0.11.5') {
+			because 'Spring Boot 3+ 와의 호환성 보장'
+		}
+	}
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()
