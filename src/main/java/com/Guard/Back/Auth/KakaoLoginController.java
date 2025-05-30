@@ -42,7 +42,7 @@ public class KakaoLoginController {
     // ✅ GET으로 수정해야 카카오 리디렉션에 정상 대응 가능
     @GetMapping("/kakao-login")
     public void kakaoLogin(@RequestParam String code, HttpServletResponse response) throws IOException {
-
+        System.out.println("🔑 받은 인가 코드: " + code);
         // 1. 인가 코드를 이용해 Access Token 요청
         KakaoTokenResponseDto tokenResponse = webClient.post()
                 .uri("https://kauth.kakao.com/oauth/token")
@@ -53,6 +53,8 @@ public class KakaoLoginController {
                 .retrieve()
                 .bodyToMono(KakaoTokenResponseDto.class)
                 .block();
+        System.out.println("🟡 카카오 access_token: " + tokenResponse.getAccess_token());
+        System.out.println("🟡 카카오 refresh_token: " + tokenResponse.getRefresh_token());
 
         // 2. 카카오 사용자 정보 조회
         KakaoUserInfoResponseDto userInfo = webClient.get()
@@ -61,6 +63,10 @@ public class KakaoLoginController {
                 .retrieve()
                 .bodyToMono(KakaoUserInfoResponseDto.class)
                 .block();
+        System.out.println("👤 사용자 id: " + userInfo.getId());
+        System.out.println("👤 nickname: " + userInfo.getProperties().get("nickname"));
+        System.out.println("👤 profile_image: " + userInfo.getProperties().get("profile_image"));
+
 
         String kakaoId = String.valueOf(userInfo.getId());
         String nickname = userInfo.getProperties().get("nickname");
@@ -82,6 +88,10 @@ public class KakaoLoginController {
         // 4. JWT 발급
         String accessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getNickname());
         String refreshToken = jwtTokenProvider.createRefreshToken();
+
+        System.out.println("✅ 최종 유저 ID(DB): " + user.getId());
+        System.out.println("✅ JWT accessToken: " + accessToken);
+        System.out.println("✅ JWT refreshToken: " + refreshToken);
 
         // 5. 기존 Refresh Token 제거 후 새로 저장
         refreshTokenRepository.findByUser(user).ifPresent(refreshTokenRepository::delete);
