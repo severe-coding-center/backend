@@ -7,4 +7,6 @@ public class AuthDto {
     public record VerifyRequest(String phoneNumber, String code) {}
     // 최종 응답 DTO
     public record AuthResponse(String accessToken) {}
+    // 회원가입 요청 DTO
+    public record SignUpRequest(String name, String phoneNumber, com.Guard.Back.Domain.UserType userType) {}
 }

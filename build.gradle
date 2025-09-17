@@ -1,65 +1,41 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.5.0'
-	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.springframework.boot' version '3.2.5' // 버전을 안정적인 3.2.5로 맞추는 것을 권장합니다.
+	id 'io.spring.dependency-management' version '1.1.4'
 }
 
 group = 'com.Guard'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+	// Java 버전을 17로 맞추는 것이 호환성에 좋습니다.
+	sourceCompatibility = '17'
 }
 
 repositories {
 	mavenCentral()
-	google()
 }
 
 dependencies {
-	// Web + JPA + Security
+	// --- 필수 의존성 ---
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-	// Kakao OAuth2
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-
-	// WebClient
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
-	// MySQL
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
-	// JWT
+	// --- JWT ---
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-	// Lombok
+	// --- 편의 기능 ---
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-
-	// PostConstruct 오류 해결용
 	implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
 
-	// Test
+	// --- 테스트 ---
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-	//Goolge
-	implementation 'com.google.firebase:firebase-admin:10.0.2'
-
-
-	// (선택) JWT 충돌 방지용
-	constraints {
-		implementation('io.jsonwebtoken:jjwt-api:0.11.5') {
-			because 'Spring Boot 3+ 와의 호환성 보장'
-		}
-	}
 }
-
 
 tasks.named('test') {
 	useJUnitPlatform()
