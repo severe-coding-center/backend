@@ -15,6 +15,7 @@ java {
 
 repositories {
 	mavenCentral()
+	google()
 }
 
 dependencies {
@@ -46,6 +47,10 @@ dependencies {
 
 	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	//Goolge
+	implementation 'com.google.firebase:firebase-admin:10.0.2'
+
 
 	// (선택) JWT 충돌 방지용
 	constraints {
