@@ -1,44 +1,52 @@
-// User.java
 package com.Guard.Back.Domain;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+/**
+ * 보호자 정보를 저장하는 엔티티 클래스.
+ * 휴대폰 번호를 식별자로 사용하며, 비밀번호 기반으로 인증합니다.
+ */
 @Entity
 @Getter
-@Setter // 💡 연동 후 코드를 null로 바꿀 때 필요해서 추가
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "users")
+@Table(name = "users") // 실제 DB에는 'users' 테이블로 생성됩니다.
 public class User {
-    // ... 기존 id, name, phoneNumber, userType, createdAt 필드는 동일 ...
+
+    /**
+     * 사용자의 고유 식별자 (자동 생성).
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    /**
+     * 보호자의 이름.
+     */
+    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true, length = 20)
+    /**
+     * 보호자의 휴대폰 번호.
+     * 로그인 시 ID 역할을 하며, 중복될 수 없습니다.
+     */
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
 
-    @Enumerated(EnumType.STRING)
+    /**
+     * 보호자의 비밀번호.
+     * BCrypt로 해싱된 값이 저장됩니다.
+     */
     @Column(nullable = false)
-    private UserType userType;
-
-    // 💡 [추가] 피보호자에게 발급될 고유 연동 코드 (null 허용, 고유해야 함)
-    @Column(unique = true)
-    private String linkingCode;
-
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+    private String password;
 
     @Builder
-    public User(String name, String phoneNumber, UserType userType, String linkingCode) {
+    public User(String name, String phoneNumber, String password) {
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.userType = userType;
-        this.linkingCode = linkingCode; // 💡 빌더에 추가
+        this.password = password;
     }
 }

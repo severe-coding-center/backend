@@ -1,67 +1,109 @@
 package com.Guard.Back.Service;
 
+import com.Guard.Back.Dto.AuthDto.LoginRequest;
 import com.Guard.Back.Domain.User;
-import com.Guard.Back.Domain.UserType;
 import com.Guard.Back.Dto.AuthDto.SignUpRequest;
-import com.Guard.Back.Jwt.JwtTokenProvider;
 import com.Guard.Back.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+/**
+ * 보호자(User)의 회원가입 및 로그인 비즈니스 로직을 처리하는 서비스 클래스.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final Map<String, String> verificationCodes = new ConcurrentHashMap<>();
+    private final PasswordEncoder passwordEncoder;
 
-    // 회원가입
-    public void signUp(SignUpRequest request) {
+    /**
+     * 보호자 회원가입을 처리합니다.
+     * @param request 회원가입 정보(이름, 전화번호)
+     * @return 생성된 8자리 보안 비밀번호 (실제 서비스에서는 SMS로 발송)
+     */
+    @Transactional
+    public String signUp(SignUpRequest request) {
+        // 전화번호 중복 가입 방지
         if (userRepository.findByPhoneNumber(request.phoneNumber()).isPresent()) {
             throw new IllegalArgumentException("이미 가입된 휴대폰 번호입니다.");
         }
 
-        String newLinkingCode = null;
-        if (request.userType() == UserType.PROTECTED) {
-            newLinkingCode = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
-        }
+        // 💡 강력한 초기 비밀번호 생성
+        String initialPassword = generateSecurePassword();
+
+        System.out.println("보호자 [" + request.name() + "] 님의 초기 비밀번호: " + initialPassword);
 
         User newUser = User.builder()
                 .name(request.name())
                 .phoneNumber(request.phoneNumber())
-                .userType(request.userType())
-                .linkingCode(newLinkingCode)
+                // 비밀번호는 반드시 BCrypt로 해싱하여 저장
+                .password(passwordEncoder.encode(initialPassword))
                 .build();
-
         userRepository.save(newUser);
+
+        return initialPassword;
     }
 
-    // 인증번호 발송
-    public void sendVerificationCode(String phoneNumber) {
-        userRepository.findByPhoneNumber(phoneNumber)
+    /**
+     * 보호자 로그인을 처리합니다.
+     * @param request 로그인 정보(전화번호, 비밀번호)
+     * @return 인증에 성공한 User 객체
+     * @throws IllegalArgumentException 전화번호가 존재하지 않거나 비밀번호가 틀린 경우
+     */
+    public User login(LoginRequest request) {
+        User user = userRepository.findByPhoneNumber(request.phoneNumber())
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 번호입니다."));
 
-        String code = String.valueOf((int) (Math.random() * 899999) + 100000);
-        System.out.println("인증코드 [" + code + "]를 " + phoneNumber + "로 발송했습니다.");
-        verificationCodes.put(phoneNumber, code);
+        // 입력된 비밀번호와 DB에 저장된 해시값을 비교
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+        return user;
     }
 
-    // 인증번호 검증 및 로그인
-    public String verifyCodeAndLogin(String phoneNumber, String code) {
-        String storedCode = verificationCodes.get(phoneNumber);
-        if (storedCode == null || !storedCode.equals(code)) {
-            throw new IllegalArgumentException("인증 코드가 일치하지 않습니다.");
+    /**
+     * 8자리 보안 비밀번호를 생성하는 private 메소드.
+     * 영문 대문자, 소문자, 숫자, 특수문자가 최소 1개 이상 포함됩니다.
+     * @return 생성된 8자리 비밀번호
+     */
+    private String generateSecurePassword() {
+        final String charsLower = "abcdefghijklmnopqrstuvwxyz";
+        final String charsUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        final String numbers = "0123456789";
+        final String specialChars = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+
+        SecureRandom random = new SecureRandom();
+        List<Character> passwordChars = new ArrayList<>();
+
+        // 1. 각 종류의 문자에서 최소 1개씩 무작위로 추가
+        passwordChars.add(charsLower.charAt(random.nextInt(charsLower.length())));
+        passwordChars.add(charsUpper.charAt(random.nextInt(charsUpper.length())));
+        passwordChars.add(numbers.charAt(random.nextInt(numbers.length())));
+        passwordChars.add(specialChars.charAt(random.nextInt(specialChars.length())));
+
+        // 2. 나머지 4자리를 모든 문자 종류에서 무작위로 채움
+        String allChars = charsLower + charsUpper + numbers + specialChars;
+        for (int i = 0; i < 4; i++) {
+            passwordChars.add(allChars.charAt(random.nextInt(allChars.length())));
         }
-        verificationCodes.remove(phoneNumber);
 
-        User user = userRepository.findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new IllegalStateException("인증 후 사용자를 찾을 수 없습니다."));
+        // 3. 생성된 8개의 문자 리스트를 무작위로 섞음
+        Collections.shuffle(passwordChars);
 
-        return jwtTokenProvider.createAccessToken(user.getId(), user.getName());
+        // 4. 최종 비밀번호 문자열로 변환
+        StringBuilder password = new StringBuilder();
+        for (Character ch : passwordChars) {
+            password.append(ch);
+        }
+
+        return password.toString();
     }
 }
