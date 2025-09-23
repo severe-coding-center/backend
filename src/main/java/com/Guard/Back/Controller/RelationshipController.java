@@ -3,6 +3,7 @@ package com.Guard.Back.Controller;
 import com.Guard.Back.Dto.RelationshipDto.LinkRequest;
 import com.Guard.Back.Service.RelationshipService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -27,14 +28,29 @@ public class RelationshipController {
     @PostMapping("/link")
     public ResponseEntity<Void> link(@RequestBody LinkRequest request, Authentication authentication) {
 
-        // TODO: authentication.getCredentials() (userType)를 확인하여 "GUARDIAN" 타입의 사용자만 이 API를 호출할 수 있도록 검증 로직 추가
+        String userType = (String) authentication.getCredentials();
+        if (!"GUARDIAN".equals(userType)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 
-        // 1. Authentication 객체에서 현재 로그인한 보호자의 ID를 추출합니다.
         Long currentGuardianId = Long.parseLong(authentication.getName());
-
-        // 2. RelationshipService를 통해 연동 로직을 수행합니다.
         relationshipService.createRelationship(request.linkingCode(), currentGuardianId);
 
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 특정 관계를 해제하는 API.
+     * @param relationshipId 해제할 관계의 ID
+     * @param authentication 현재 로그인한 사용자의 정보
+     * @return 성공 시 200 OK
+     */
+    @DeleteMapping("/{relationshipId}")
+    public ResponseEntity<Void> unlink(@PathVariable Long relationshipId, Authentication authentication) {
+        Long currentUserId = Long.parseLong(authentication.getName());
+        String currentUserType = (String) authentication.getCredentials();
+
+        relationshipService.deleteRelationship(relationshipId, currentUserId, currentUserType);
         return ResponseEntity.ok().build();
     }
 }

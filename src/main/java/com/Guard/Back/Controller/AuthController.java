@@ -7,6 +7,7 @@ import com.Guard.Back.Service.AuthService;
 import com.Guard.Back.Service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -52,4 +53,28 @@ public class AuthController {
         // 4. 생성된 토큰들을 클라이언트에게 반환합니다.
         return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
     }
+    /**
+     * Access Token 재발급 API.
+     * @param request Refresh Token을 담은 요청
+     * @return 새로 발급된 Access Token
+     */
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshResponse> refresh(@RequestBody RefreshRequest request) {
+        String newAccessToken = tokenService.reissueAccessToken(request.refreshToken());
+        return ResponseEntity.ok(new RefreshResponse(newAccessToken));
+    }
+
+    /**
+     * 로그아웃 API.
+     * @param authentication 현재 로그인한 사용자의 정보
+     * @return 성공 메시지
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        String userType = (String) authentication.getCredentials();
+        tokenService.logout(userId, userType);
+        return ResponseEntity.ok("로그아웃 되었습니다.");
+    }
+
 }

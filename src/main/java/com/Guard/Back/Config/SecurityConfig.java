@@ -40,7 +40,7 @@ public class SecurityConfig {
                         // 그 외의 모든 요청은 반드시 인증(로그인)된 사용자만 접근할 수 있도록 설정합니다.
                         .anyRequest().authenticated()
                 )
-                // 우리가 직접 구현한 JwtAuthenticationFilter를 Spring Security의 기본 인증 필터 앞에 추가합니다.
+                // JwtAuthenticationFilter를 Spring Security의 기본 인증 필터 앞에 추가합니다.
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

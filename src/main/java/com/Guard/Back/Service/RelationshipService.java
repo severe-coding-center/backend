@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 /**
  * 보호자와 피보호자 간의 관계 설정 비즈니스 로직을 처리하는 서비스 클래스.
  */
@@ -34,15 +36,12 @@ public class RelationshipService {
         ProtectedUser protectedUser = protectedUserRepository.findByLinkingCode(linkingCode)
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 연동 코드입니다."));
 
-        // 1. 먼저 현재 연결된 보호자 수를 확인합니다.
         long existingGuardians = relationshipRepository.countByProtectedUser(protectedUser);
 
-        // 2. 만약 이미 2명 이상이라면, 예외를 발생시켜 연동을 막습니다.
         if (existingGuardians >= 2) {
             throw new IllegalStateException("이미 최대 2명의 보호자가 연결되어 있습니다.");
         }
 
-        // 3. 관계 엔티티 생성 및 저장
         relationshipRepository.save(
                 Relationship.builder()
                         .guardian(guardian)
@@ -50,9 +49,39 @@ public class RelationshipService {
                         .build()
         );
 
-        // 4. 이번 연결로 총 2명이 채워졌을 경우에만 연동 코드를 null로 만듭니다.
-        if (existingGuardians == 1) {
+        if (existingGuardians == 1) { // 이번 연결로 총 2명이 채워졌을 경우
             protectedUser.setLinkingCode(null);
+        }
+    }
+
+    /**
+     * 특정 관계를 해제합니다.
+     * @param relationshipId 해제할 관계의 ID
+     * @param currentUserId 요청을 보낸 사용자의 ID (JWT에서 추출)
+     * @param currentUserType 요청을 보낸 사용자의 타입 ("GUARDIAN" 또는 "PROTECTED")
+     */
+    @Transactional
+    public void deleteRelationship(Long relationshipId, Long currentUserId, String currentUserType) {
+        Relationship relationship = relationshipRepository.findById(relationshipId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 관계입니다."));
+
+        // 💡 [핵심] 권한 검증: 요청자가 해당 관계의 보호자 또는 피보호자인지 확인합니다.
+        boolean isGuardian = "GUARDIAN".equals(currentUserType) && relationship.getGuardian().getId().equals(currentUserId);
+        boolean isProtectedUser = "PROTECTED".equals(currentUserType) && relationship.getProtectedUser().getId().equals(currentUserId);
+
+        if (!isGuardian && !isProtectedUser) {
+            throw new IllegalStateException("해당 관계를 해제할 권한이 없습니다.");
+        }
+
+        // 권한이 확인되면 관계를 삭제합니다.
+        relationshipRepository.delete(relationship);
+
+        // 연결이 해제된 피보호자에게 새로운 연동 코드를 발급해줍니다.
+        ProtectedUser protectedUser = relationship.getProtectedUser();
+        if (protectedUser.getLinkingCode() == null) {
+            String newLinkingCode = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+            protectedUser.setLinkingCode(newLinkingCode);
+            protectedUserRepository.save(protectedUser);
         }
     }
 }

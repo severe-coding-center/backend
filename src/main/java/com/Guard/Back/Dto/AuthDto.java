@@ -24,4 +24,10 @@ public class AuthDto {
      * @param refreshToken AccessToken 재발급에 사용되는 장기 토큰
      */
     public record AuthResponse(String accessToken, String refreshToken) {}
+
+    // 토큰 재발급 요청 DTO
+    public record RefreshRequest(String refreshToken) {}
+
+    // 토큰 재발급 응답 DTO
+    public record RefreshResponse(String accessToken) {}
 }
