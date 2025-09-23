@@ -2,6 +2,7 @@ package com.Guard.Back.Repository;
 
 import com.Guard.Back.Domain.ProtectedUser;
 import com.Guard.Back.Domain.Relationship;
+import com.Guard.Back.Domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -15,4 +16,18 @@ public interface RelationshipRepository extends JpaRepository<Relationship, Long
      * @return 연결된 보호자의 수 (long)
      */
     long countByProtectedUser(ProtectedUser protectedUser);
+
+    /**
+     * 특정 보호자와 연결된 모든 관계를 삭제합니다.
+     * @param guardian 삭제할 보호자 객체
+     */
+    void deleteAllByGuardian(User guardian);
+
+    /**
+     * 💡특정 피보호자와 연결된 모든 관계를 삭제합니다.
+     * @param protectedUser 삭제할 피보호자 객체
+     */
+    void deleteAllByProtectedUser(ProtectedUser protectedUser);
+
+
 }
