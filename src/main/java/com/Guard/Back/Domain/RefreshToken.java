@@ -29,7 +29,7 @@ public class RefreshToken {
      * 보호자가 로그인한 경우에만 값이 존재합니다.
      */
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", unique = true)
+    @JoinColumn(name = "user_id", unique = true, nullable = true)
     private User user;
 
     /**

@@ -59,7 +59,6 @@ public class AuthService {
         userRepository.save(newUser);
     }
 
-
     /**
      * 보호자 로그인을 처리합니다.
      */
