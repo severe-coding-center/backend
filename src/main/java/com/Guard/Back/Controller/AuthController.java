@@ -23,34 +23,45 @@ public class AuthController {
     private final TokenService tokenService;
 
     /**
-     * 보호자 회원가입 API.
-     * @param request 회원가입 정보(이름, 전화번호)
-     * @return 생성된 초기 비밀번호를 포함한 성공 메시지
+     * 1. 회원가입 인증번호 발송 API
+     */
+    @PostMapping("/signup/send-code")
+    public ResponseEntity<String> sendSignUpCode(@RequestBody PhoneRequest request) {
+        authService.sendVerificationCode(request);
+        return ResponseEntity.ok("인증번호가 발송되었습니다.");
+    }
+
+    /**
+     * 2. 회원가입 인증번호 검증 API
+     */
+    @PostMapping("/signup/verify-code")
+    public ResponseEntity<String> verifySignUpCode(@RequestBody VerificationRequest request) {
+        boolean isVerified = authService.verifyCode(request);
+        if (isVerified) {
+            return ResponseEntity.ok("인증에 성공했습니다.");
+        } else {
+            return ResponseEntity.badRequest().body("인증번호가 올바르지 않습니다.");
+        }
+    }
+
+    /**
+     * 3. 최종 회원가입 API
      */
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody SignUpRequest request) {
-        String initialPassword = authService.signUp(request);
-        return ResponseEntity.ok("회원가입 성공! 초기 비밀번호: " + initialPassword);
+        authService.signUp(request);
+        return ResponseEntity.ok("회원가입이 완료되었습니다.");
     }
 
     /**
      * 보호자 로그인 API.
-     * @param request 로그인 정보(전화번호, 비밀번호)
-     * @return AccessToken과 RefreshToken을 담은 응답
      */
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        // 1. AuthService를 통해 사용자 인증을 수행하고, 인증된 User 객체를 받습니다.
         User user = authService.login(request);
-
-        // 2. JwtTokenProvider를 통해 토큰들을 생성합니다.
         String accessToken = jwtTokenProvider.createAccessToken(user.getId(), "GUARDIAN");
         String refreshToken = jwtTokenProvider.createRefreshToken();
-
-        // 3. TokenService를 통해 RefreshToken을 DB에 저장/갱신합니다.
         tokenService.saveOrUpdateRefreshToken(user, null, refreshToken);
-
-        // 4. 생성된 토큰들을 클라이언트에게 반환합니다.
         return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
     }
     /**

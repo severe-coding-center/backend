@@ -36,5 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 
-### Kakao API Key ###
+### API Key ###
 application-API-KEY.properties
