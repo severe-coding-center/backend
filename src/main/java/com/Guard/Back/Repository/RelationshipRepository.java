@@ -29,5 +29,11 @@ public interface RelationshipRepository extends JpaRepository<Relationship, Long
      */
     void deleteAllByProtectedUser(ProtectedUser protectedUser);
 
-
+    /**
+     * 💡 [추가] 특정 보호자와 피보호자 간의 관계가 이미 존재하는지 확인합니다.
+     * @param guardian 확인할 보호자 객체
+     * @param protectedUser 확인할 피보호자 객체
+     * @return 관계가 존재하면 true, 아니면 false
+     */
+    boolean existsByGuardianAndProtectedUser(User guardian, ProtectedUser protectedUser);
 }

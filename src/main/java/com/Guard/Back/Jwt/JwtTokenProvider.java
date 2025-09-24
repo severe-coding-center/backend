@@ -24,7 +24,7 @@ public class JwtTokenProvider {
     private String secretKey;
     private Key key;
     private final long ACCESS_TOKEN_VALID_TIME = 1000L * 60 * 30; // 30분
-    private final long REFRESH_TOKEN_VALID_TIME = 1000L * 60 * 60 * 24 * 7; // 7일
+    private final long REFRESH_TOKEN_VALID_TIME = 1000L * 60 * 60 * 24 * 30; // 30일
 
     /**
      * 객체 초기화 시, secretKey를 Base64로 디코딩하여 Key 객체를 생성합니다.

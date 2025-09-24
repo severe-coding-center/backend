@@ -36,12 +36,18 @@ public class RelationshipService {
         ProtectedUser protectedUser = protectedUserRepository.findByLinkingCode(linkingCode)
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 연동 코드입니다."));
 
-        long existingGuardians = relationshipRepository.countByProtectedUser(protectedUser);
+        // 💡 1. [수정] 이미 두 사람의 관계가 존재하는지 먼저 확인
+        if (relationshipRepository.existsByGuardianAndProtectedUser(guardian, protectedUser)) {
+            throw new IllegalStateException("이미 연결된 관계입니다.");
+        }
 
+        // 💡 2. [기존 로직] 피보호자에게 연결된 총 보호자 수 확인
+        long existingGuardians = relationshipRepository.countByProtectedUser(protectedUser);
         if (existingGuardians >= 2) {
             throw new IllegalStateException("이미 최대 2명의 보호자가 연결되어 있습니다.");
         }
 
+        // 💡 3. [기존 로직] 새로운 관계 저장
         relationshipRepository.save(
                 Relationship.builder()
                         .guardian(guardian)
@@ -49,8 +55,10 @@ public class RelationshipService {
                         .build()
         );
 
-        if (existingGuardians == 1) { // 이번 연결로 총 2명이 채워졌을 경우
+        // 💡 4. [기존 로직] 연결 후 연동 코드 처리
+        if (existingGuardians + 1 == 2) { // 이번 연결로 총 2명이 채워졌을 경우
             protectedUser.setLinkingCode(null);
+            // protectedUserRepository.save(protectedUser); // @Transactional 이므로 자동 변경 감지(dirty checking) 되어 저장됩니다.
         }
     }
 

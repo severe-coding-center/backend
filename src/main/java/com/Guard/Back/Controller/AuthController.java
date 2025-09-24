@@ -10,9 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * 보호자(User)의 인증(회원가입, 로그인) 관련 API 요청을 처리하는 컨트롤러.
- */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -22,18 +19,12 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenService tokenService;
 
-    /**
-     * 1. 회원가입 인증번호 발송 API
-     */
     @PostMapping("/signup/send-code")
     public ResponseEntity<String> sendSignUpCode(@RequestBody PhoneRequest request) {
         authService.sendVerificationCode(request);
         return ResponseEntity.ok("인증번호가 발송되었습니다.");
     }
 
-    /**
-     * 2. 회원가입 인증번호 검증 API
-     */
     @PostMapping("/signup/verify-code")
     public ResponseEntity<String> verifySignUpCode(@RequestBody VerificationRequest request) {
         boolean isVerified = authService.verifyCode(request);
@@ -44,18 +35,12 @@ public class AuthController {
         }
     }
 
-    /**
-     * 3. 최종 회원가입 API
-     */
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody SignUpRequest request) {
         authService.signUp(request);
         return ResponseEntity.ok("회원가입이 완료되었습니다.");
     }
 
-    /**
-     * 보호자 로그인 API.
-     */
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         User user = authService.login(request);
@@ -64,22 +49,18 @@ public class AuthController {
         tokenService.saveOrUpdateRefreshToken(user, null, refreshToken);
         return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
     }
+
     /**
-     * Access Token 재발급 API.
+     * 💡 [수정] Access Token 및 Refresh Token 재발급 API.
      * @param request Refresh Token을 담은 요청
-     * @return 새로 발급된 Access Token
+     * @return 새로 발급된 Access Token과 Refresh Token
      */
     @PostMapping("/refresh")
     public ResponseEntity<RefreshResponse> refresh(@RequestBody RefreshRequest request) {
-        String newAccessToken = tokenService.reissueAccessToken(request.refreshToken());
-        return ResponseEntity.ok(new RefreshResponse(newAccessToken));
+        RefreshResponse newTokens = tokenService.reissueTokens(request.refreshToken());
+        return ResponseEntity.ok(newTokens);
     }
 
-    /**
-     * 로그아웃 API.
-     * @param authentication 현재 로그인한 사용자의 정보
-     * @return 성공 메시지
-     */
     @PostMapping("/logout")
     public ResponseEntity<String> logout(Authentication authentication) {
         Long userId = Long.parseLong(authentication.getName());
@@ -87,5 +68,4 @@ public class AuthController {
         tokenService.logout(userId, userType);
         return ResponseEntity.ok("로그아웃 되었습니다.");
     }
-
 }
