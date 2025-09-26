@@ -1,57 +1,56 @@
 package com.Guard.Back.Config;
 
-import com.Guard.Back.Jwt.JwtAuthenticationFilter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-/**
- * 애플리케이션의 보안 설정을 담당하는 클래스.
- */
+import java.util.Arrays;
+
 @Configuration
-@EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    /**
-     * HTTP 요청에 대한 보안 필터 체인을 설정합니다.
-     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // CSRF(Cross-Site Request Forgery) 공격 방어 기능을 비활성화합니다. (Stateless API 서버에서는 불필요)
+                // 💡 1. CORS 설정을 적용합니다.
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+                // 💡 2. CSRF, Form Login, HTTP Basic 인증 비활성화 (기존과 동일)
                 .csrf(AbstractHttpConfigurer::disable)
-                // 세션을 사용하지 않는 Stateless 방식으로 서버를 운영하도록 설정합니다.
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+
+                // 💡 3. 세션을 사용하지 않는 Stateless 서버로 설정
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // 각 HTTP 요청 경로에 대한 접근 권한을 설정합니다.
+
+                // 💡 4. API 경로별 접근 권한 설정
                 .authorizeHttpRequests(auth -> auth
-                        // 인증/회원가입 관련 API 경로는 누구나 접근할 수 있도록 허용합니다.
-                        .requestMatchers("/api/auth/**", "/api/protected/**").permitAll()
-                        // 그 외의 모든 요청은 반드시 인증(로그인)된 사용자만 접근할 수 있도록 설정합니다.
+                        .requestMatchers("/api/**").permitAll() // 우선 모든 /api/** 경로를 허용
                         .anyRequest().authenticated()
-                )
-                // JwtAuthenticationFilter를 Spring Security의 기본 인증 필터 앞에 추가합니다.
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                );
 
         return http.build();
     }
 
     /**
-     * 비밀번호 암호화를 위한 PasswordEncoder를 Spring Bean 으로 등록합니다.
-     * BCrypt 해싱 알고리즘을 사용합니다.
+     * 💡 5. CORS 설정을 위한 Bean 입니다.
+     * 모든 출처(Origin), 모든 HTTP 메서드, 모든 헤더를 허용합니다.
      */
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // 실제 운영 환경에서는 '*' 대신 앱의 도메인을 명시하는 것이 안전합니다.
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 대해 위 설정 적용
+        return source;
     }
 }
