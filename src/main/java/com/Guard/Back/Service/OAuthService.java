@@ -5,5 +5,6 @@ import com.Guard.Back.Dto.OAuthUserInfoDto;
 
 public interface OAuthService {
     OAuthProvider provider();
-    OAuthUserInfoDto getUserInfo(String accessToken);
+    // 💡 [변경] 파라미터를 code로 변경
+    OAuthUserInfoDto getUserInfo(String code);
 }
