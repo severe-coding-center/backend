@@ -76,9 +76,9 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
         Long userId = getUserId(token);
         String userType = getUserType(token);
-        // Principal: 사용자 식별자(ID), Credentials: 사용자 타입(권한 검증용)
+        // "GUARDIAN" -> "ROLE_GUARDIAN", "PROTECTED" -> "ROLE_PROTECTED"
         return new UsernamePasswordAuthenticationToken(userId, userType,
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
+                Collections.singleton(new SimpleGrantedAuthority("ROLE_" + userType)));
     }
 
     /**

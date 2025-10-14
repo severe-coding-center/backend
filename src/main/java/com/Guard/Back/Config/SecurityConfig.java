@@ -31,7 +31,16 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").permitAll()
+                        // 인증 없이 접근 가능한 경로
+                        .requestMatchers("/api/auth/**", "/api/protected/register").permitAll()
+
+                        // GUARDIAN 역할만 접근 가능한 경로
+                        .requestMatchers("/api/relationship/link", "/api/location/{protectedUserId}").hasRole("GUARDIAN")
+
+                        // PROTECTED 역할만 접근 가능한 경로
+                        .requestMatchers("/api/location").hasRole("PROTECTED")
+
+                        // 그 외 모든 요청은 인증만 되면 접근 가능
                         .anyRequest().authenticated()
                 )
                 // 💡 [핵심 추가] UsernamePasswordAuthenticationFilter 앞에 우리가 만든 JWT 필터를 추가합니다.
@@ -42,7 +51,6 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        // ... (기존 CORS 설정은 그대로 둡니다) ...
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
