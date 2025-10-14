@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
-/**
- * 피보호자의 위치 기록을 저장하는 엔티티.
- */
+/*피보호자의 위치 기록을 저장하는 엔티티.*/
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -14,9 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 public class LocationLog {
 
-    /**
-     * 위치 기록의 고유 식별자 (자동 생성).
-     */
+    /*위치 기록의 고유 식별자 (자동 생성).*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,20 +25,14 @@ public class LocationLog {
     @JoinColumn(name = "protected_user_id", nullable = false)
     private ProtectedUser protectedUser;
 
-    /**
-     * 위도 정보.
-     */
+    /*위도 정보.*/
     @Column(nullable = false)
     private double latitude;
 
-    /**
-     * 경도 정보.
-     */
+    /*경도 정보.*/
     @Column(nullable = false)
     private double longitude;
 
-    /**
-     * 위치가 기록된 시간.
-     */
+    /*위치가 기록된 시간.*/
     private LocalDateTime recordedAt;
 }

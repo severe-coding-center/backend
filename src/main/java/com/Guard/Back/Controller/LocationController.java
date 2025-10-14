@@ -4,18 +4,16 @@ import com.Guard.Back.Dto.LocationRequest;
 import com.Guard.Back.Dto.LocationResponse;
 import com.Guard.Back.Service.LocationService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j; // 💡 Slf4j 임포트 추가
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * 피보호자의 위치 정보 업로드 및 보호자의 위치 조회 API 요청을 처리하는 컨트롤러.
- */
+/*피보호자의 위치 정보 업로드 및 보호자의 위치 조회 API 요청을 처리하는 컨트롤러.*/
 @RestController
 @RequestMapping("/api/location")
 @RequiredArgsConstructor
-@Slf4j // 💡 로깅을 위한 어노테이션 추가
+@Slf4j
 public class LocationController {
 
     private final LocationService locationService;

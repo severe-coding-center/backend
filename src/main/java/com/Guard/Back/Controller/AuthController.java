@@ -10,20 +10,18 @@ import com.Guard.Back.Repository.UserRepository;
 import com.Guard.Back.Domain.OAuthProvider;
 import com.Guard.Back.Dto.OAuthUserInfoDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j; // 💡 Slf4j 임포트 추가
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
-/**
- * 사용자 인증(로그인, 로그아웃, 토큰 재발급) 관련 API 요청을 처리하는 컨트롤러.
- */
+/*사용자 인증(로그인, 로그아웃, 토큰 재발급) 관련 API 요청을 처리하는 컨트롤러.*/
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Slf4j // 💡 로깅을 위한 어노테이션 추가
+@Slf4j
 public class AuthController {
 
     private final KakaoOAuthService kakaoOAuthService;

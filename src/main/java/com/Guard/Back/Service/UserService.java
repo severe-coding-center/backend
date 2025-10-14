@@ -9,7 +9,7 @@ import com.Guard.Back.Repository.RefreshTokenRepository;
 import com.Guard.Back.Repository.RelationshipRepository;
 import com.Guard.Back.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j; // 💡 Slf4j 임포트 추가
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j // 💡 로깅을 위한 어노테이션 추가
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;

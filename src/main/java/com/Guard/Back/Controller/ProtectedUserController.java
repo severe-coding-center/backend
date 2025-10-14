@@ -8,17 +8,15 @@ import com.Guard.Back.Jwt.JwtTokenProvider;
 import com.Guard.Back.Service.ProtectedUserService;
 import com.Guard.Back.Service.TokenService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j; // 💡 Slf4j 임포트 추가
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * 피보호자(ProtectedUser)의 등록/로그인 API 요청을 처리하는 컨트롤러.
- */
+/*피보호자(ProtectedUser)의 등록/로그인 API 요청을 처리하는 컨트롤러.*/
 @RestController
 @RequestMapping("/api/protected")
 @RequiredArgsConstructor
-@Slf4j // 💡 로깅을 위한 어노테이션 추가
+@Slf4j
 public class ProtectedUserController {
 
     private final ProtectedUserService protectedUserService;

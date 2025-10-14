@@ -13,7 +13,7 @@ import java.util.UUID;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j // 💡 로깅을 위한 어노테이션 추가
+@Slf4j
 public class ProtectedUserService {
 
     private final ProtectedUserRepository protectedUserRepository;

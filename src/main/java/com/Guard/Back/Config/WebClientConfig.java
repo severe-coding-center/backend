@@ -4,9 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
-/**
- * 외부 API와의 비동기 HTTP 통신을 위한 WebClient를 설정하는 클래스.
- */
+/*외부 API와의 비동기 HTTP 통신을 위한 WebClient를 설정하는 클래스.*/
 @Configuration
 public class WebClientConfig {
 

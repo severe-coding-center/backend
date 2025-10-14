@@ -13,9 +13,7 @@ import java.util.Map;
 @Getter
 @NoArgsConstructor
 public class KakaoUserInfoResponseDto {
-    /**
-     * 카카오가 발급한 사용자의 고유 ID.
-     */
+    /*카카오가 발급한 사용자의 고유 ID.*/
     private Long id;
 
     /**

@@ -14,9 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 public class ProtectedUser {
 
-    /**
-     * 피보호자의 고유 식별자 (자동 생성).
-     */
+    /*피보호자의 고유 식별자 (자동 생성).*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

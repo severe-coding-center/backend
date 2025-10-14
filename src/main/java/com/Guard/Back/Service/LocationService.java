@@ -12,7 +12,7 @@ import com.Guard.Back.Repository.ProtectedUserRepository;
 import com.Guard.Back.Repository.RelationshipRepository;
 import com.Guard.Back.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j; // 💡 Slf4j 임포트 추가
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j // 💡 로깅을 위한 어노테이션 추가
+@Slf4j
 public class LocationService {
 
     private final LocationLogRepository locationLogRepository;

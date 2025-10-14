@@ -15,16 +15,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RefreshToken {
 
-    /**
-     * Refresh Token의 고유 식별자 (자동 생성).
-     */
+    /*Refresh Token의 고유 식별자 (자동 생성).*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * 실제 Refresh Token의 값. 이 값으로 DB에서 토큰을 조회합니다.
-     */
+    /*실제 Refresh Token의 값. 이 값으로 DB에서 토큰을 조회합니다.*/
     @Column(nullable = false, unique = true)
     private String tokenValue;
 

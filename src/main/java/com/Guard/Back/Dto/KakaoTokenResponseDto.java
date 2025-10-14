@@ -12,33 +12,21 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class KakaoTokenResponseDto {
-    /**
-     * 사용자 인증에 사용되는 Access Token.
-     */
+    /*사용자 인증에 사용되는 Access Token.*/
     private String access_token;
 
-    /**
-     * 토큰 타입. 보통 "bearer"로 고정됩니다.
-     */
+    /*토큰 타입. 보통 "bearer"로 고정됩니다.*/
     private String token_type;
 
-    /**
-     * Access Token 갱신에 사용되는 Refresh Token.
-     */
+    /*Access Token 갱신에 사용되는 Refresh Token.*/
     private String refresh_token;
 
-    /**
-     * Access Token의 만료 시간 (초 단위).
-     */
+    /*Access Token의 만료 시간 (초 단위).*/
     private int expires_in;
 
-    /**
-     * 인증된 사용자의 정보 조회 권한 범위.
-     */
+    /*인증된 사용자의 정보 조회 권한 범위.*/
     private String scope;
 
-    /**
-     * Refresh Token의 만료 시간 (초 단위).
-     */
+    /*Refresh Token의 만료 시간 (초 단위).*/
     private int refresh_token_expires_in;
 }

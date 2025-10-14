@@ -3,14 +3,12 @@ package com.Guard.Back.Controller;
 import com.Guard.Back.Domain.UserRole;
 import com.Guard.Back.Service.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j; // 💡 Slf4j 임포트 추가
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * 회원 탈퇴 등 사용자 계정 관리 API 요청을 처리하는 컨트롤러.
- */
+/*회원 탈퇴 등 사용자 계정 관리 API 요청을 처리하는 컨트롤러.*/
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor

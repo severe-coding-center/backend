@@ -4,14 +4,12 @@ import com.Guard.Back.Dto.LinkRequest;
 import com.Guard.Back.Service.RelationshipService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j; // 💡 Slf4j 임포트 추가
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * 보호자와 피보호자 간의 관계 생성 및 삭제 API 요청을 처리하는 컨트롤러.
- */
+/*보호자와 피보호자 간의 관계 생성 및 삭제 API 요청을 처리하는 컨트롤러.*/
 @RestController
 @RequestMapping("/api/relationship")
 @RequiredArgsConstructor

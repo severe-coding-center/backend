@@ -14,9 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Relationship {
 
-    /**
-     * 관계의 고유 식별자 (자동 생성).
-     */
+    /*관계의 고유 식별자 (자동 생성).*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

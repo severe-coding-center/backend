@@ -11,23 +11,15 @@ import lombok.Getter;
 @Getter
 @Builder
 public class OAuthUserInfoDto {
-    /**
-     * 소셜 로그인 제공자 타입 (e.g., KAKAO).
-     */
+    /*소셜 로그인 제공자 타입 (e.g., KAKAO).*/
     private OAuthProvider provider;
 
-    /**
-     * 해당 소셜 로그인 서비스 내에서 사용자를 식별하는 고유 ID.
-     */
+    /*해당 소셜 로그인 서비스 내에서 사용자를 식별하는 고유 ID.*/
     private String providerId;
 
-    /**
-     * 사용자의 닉네임.
-     */
+    /*사용자의 닉네임.*/
     private String nickname;
 
-    /**
-     * 사용자의 프로필 이미지 URL.
-     */
+    /*사용자의 프로필 이미지 URL.*/
     private String profileImage;
 }
