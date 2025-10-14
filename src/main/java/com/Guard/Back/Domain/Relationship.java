@@ -6,9 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * 보호자(User)와 피보호자(ProtectedUser) 간의 연결 관계를 정의하는 엔티티.
- */
+/*보호자(User)와 피보호자(ProtectedUser) 간의 연결 관계를 정의하는 엔티티.*/
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

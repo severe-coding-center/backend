@@ -15,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
-/**
- * 보호자와 피보호자 간의 관계 생성 및 삭제 비즈니스 로직을 처리하는 서비스 클래스.
- */
+/*보호자와 피보호자 간의 관계 생성 및 삭제 비즈니스 로직을 처리하는 서비스 클래스. */
 @Service
 @RequiredArgsConstructor
 @Slf4j

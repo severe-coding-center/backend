@@ -15,7 +15,6 @@ public class GlobalExceptionHandler {
 
     /**
      * CustomException 타입의 예외가 발생했을 때 처리하는 핸들러 메소드.
-     *
      * @param e 발생한 CustomException 객체.
      * @return ErrorCode에 정의된 HTTP 상태 코드와 메시지를 담은 ResponseEntity<ErrorResponse> 객체.
      */

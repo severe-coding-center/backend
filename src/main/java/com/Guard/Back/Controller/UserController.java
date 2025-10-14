@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import com.Guard.Back.Dto.UserInfoDto;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /*회원 탈퇴 등 사용자 계정 관리 API 요청을 처리하는 컨트롤러.*/
 @RestController
@@ -16,6 +18,27 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+
+    /**
+     * 현재 로그인한 사용자의 정보를 조회하는 API.
+     *
+     * @param authentication 현재 로그인한 사용자의 인증 정보.
+     * @return 성공 시 사용자의 상세 정보가 담긴 DTO.
+     */
+    @GetMapping("/me")
+    public ResponseEntity<UserInfoDto> getUserInfo(Authentication authentication) {
+        Long currentUserId = Long.parseLong(authentication.getName());
+
+        String currentUserType = authentication.getAuthorities().stream()
+                .findFirst()
+                .map(auth -> auth.getAuthority().replace("ROLE_", "")) // "ROLE_" 접두사 제거
+                .orElse(null);
+
+        log.info("[사용자 정보 조회] 사용자 ID: {}, 역할: {}의 정보 조회를 요청했습니다.", currentUserId, currentUserType);
+        UserInfoDto userInfo = userService.getUserInfo(currentUserId, currentUserType);
+        log.info("[사용자 정보 조회] 사용자 ID: {}의 정보 조회가 완료되었습니다.", currentUserId);
+        return ResponseEntity.ok(userInfo);
+    }
 
     /**
      * 현재 로그인한 사용자의 계정을 탈퇴시킵니다.

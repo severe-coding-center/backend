@@ -1,8 +1,6 @@
 package com.Guard.Back.Dto;
 
-/**
- * 피보호자의 등록 또는 로그인 성공 시 클라이언트에 반환될 데이터 전송 객체(DTO).
- */
+/*피보호자의 등록 또는 로그인 성공 시 클라이언트에 반환될 데이터 전송 객체(DTO).*/
 public record RegisterResponse(
         /* API 접근 권한을 증명하는 단기 토큰 (Access Token).*/
         String accessToken,

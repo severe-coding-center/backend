@@ -2,6 +2,7 @@ package com.Guard.Back.Service;
 
 import com.Guard.Back.Domain.ProtectedUser;
 import com.Guard.Back.Domain.User;
+import com.Guard.Back.Dto.UserInfoDto;
 import com.Guard.Back.Exception.CustomException;
 import com.Guard.Back.Exception.ErrorCode;
 import com.Guard.Back.Repository.ProtectedUserRepository;
@@ -13,9 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * 사용자 계정(보호자, 피보호자) 삭제와 관련된 비즈니스 로직을 처리하는 서비스 클래스.
- */
+/*사용자 계정(보호자, 피보호자) 삭제와 관련된 비즈니스 로직을 처리하는 서비스 클래스.*/
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -76,5 +75,39 @@ public class UserService {
 
         protectedUserRepository.delete(protectedUser);
         log.info("[회원 탈퇴] 피보호자 ID: {}의 계정 삭제가 성공적으로 완료되었습니다.", protectedUserId);
+    }
+
+    /**
+     * 현재 로그인한 사용자의 정보를 조회합니다.
+     * 보호자의 경우, 연결된 피보호자의 ID를 함께 반환합니다.
+     *
+     * @param userId   정보를 조회할 사용자의 ID.
+     * @param userType 사용자의 역할 ("GUARDIAN" 또는 "PROTECTED").
+     * @return 사용자의 상세 정보가 담긴 UserInfoDto.
+     * @throws CustomException 존재하지 않는 사용자이거나 조회 권한이 없는 경우 발생.
+     */
+    @Transactional(readOnly = true)
+    public UserInfoDto getUserInfo(Long userId, String userType) {
+        if ("GUARDIAN".equals(userType)) {
+            log.info("[사용자 정보 조회] 보호자 ID: {}의 정보 조회를 시작합니다.", userId);
+            User guardian = userRepository.findById(userId)
+                    .orElseThrow(() -> new com.Guard.Back.Exception.CustomException(com.Guard.Back.Exception.ErrorCode.GUARDIAN_NOT_FOUND));
+
+            // 보호자와 연결된 피보호자 ID를 찾습니다.
+            Long linkedProtectedUserId = relationshipRepository.findByGuardian(guardian)
+                    .map(relationship -> relationship.getProtectedUser().getId())
+                    .orElse(null);
+
+            return UserInfoDto.builder()
+                    .userId(guardian.getId())
+                    .nickname(guardian.getNickname())
+                    .userType("GUARDIAN")
+                    .linkedUserId(linkedProtectedUserId)
+                    .build();
+        } else {
+            // 보호자가 아닌 경우, 이 API를 통해 정보를 조회할 수 없습니다.
+            log.warn("[사용자 정보 조회] 권한 없음! 보호자가 아닌 사용자(ID: {}, 역할: {})가 정보 조회를 시도했습니다.", userId, userType);
+            throw new com.Guard.Back.Exception.CustomException(com.Guard.Back.Exception.ErrorCode.UNAUTHORIZED_ACCESS);
+        }
     }
 }

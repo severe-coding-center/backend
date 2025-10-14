@@ -27,7 +27,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * 모든 요청에 대해 한 번씩 실행되는 필터링 메소드.
      * 요청 헤더에서 JWT 토큰을 추출하여 유효성을 검증하고,
      * 유효한 경우 Spring Security 컨텍스트에 인증 정보를 설정합니다.
-     *
      * @param request      HTTP 요청 객체
      * @param response     HTTP 응답 객체
      * @param filterChain  다음 필터를 호출하기 위한 체인 객체

@@ -3,9 +3,7 @@ package com.Guard.Back.Dto;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-/**
- * 피보호자가 자신의 위치 정보를 서버로 업로드할 때 사용하는 데이터 전송 객체(DTO).
- */
+/*피보호자가 자신의 위치 정보를 서버로 업로드할 때 사용하는 데이터 전송 객체(DTO).*/
 public record LocationRequest(
         /*
          * 현재 위치의 위도.

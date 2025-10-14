@@ -4,14 +4,11 @@ import com.Guard.Back.Domain.ProtectedUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
-/**
- * ProtectedUser(피보호자) 엔티티에 대한 데이터 접근을 처리하는 Repository 인터페이스.
- */
+/*ProtectedUser(피보호자) 엔티티에 대한 데이터 접근을 처리하는 Repository 인터페이스.*/
 public interface ProtectedUserRepository extends JpaRepository<ProtectedUser, Long> {
 
     /**
      * 기기 고유 ID로 피보호자를 조회합니다.
-     *
      * @param deviceId 조회할 기기 ID.
      * @return 해당 기기 ID를 가진 피보호자 정보를 담은 Optional 객체.
      */

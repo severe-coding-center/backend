@@ -29,13 +29,9 @@ public enum ErrorCode {
     RELATIONSHIP_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 연결된 관계입니다."),
     MAX_GUARDIANS_REACHED(HttpStatus.CONFLICT, "이미 최대 2명의 보호자가 연결되어 있습니다.");
 
-    /**
-     * 해당 에러 코드의 HTTP 상태 코드.
-     */
+    /*해당 에러 코드의 HTTP 상태 코드.*/
     private final HttpStatus httpStatus;
 
-    /**
-     * 클라이언트에게 보여질 에러 메시지.
-     */
+    /*클라이언트에게 보여질 에러 메시지.*/
     private final String message;
 }

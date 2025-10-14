@@ -13,7 +13,6 @@ public interface LocationLogRepository extends JpaRepository<LocationLog, Long> 
 
     /**
      * 특정 피보호자의 가장 최신 위치 기록 1개를 ID 내림차순으로 조회합니다.
-     *
      * @param protectedUser 위치 기록을 조회할 피보호자 엔티티.
      * @return 가장 최신 위치 기록을 담은 Optional 객체. 기록이 없으면 Optional.empty()를 반환합니다.
      */

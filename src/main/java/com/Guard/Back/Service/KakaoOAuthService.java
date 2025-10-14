@@ -14,9 +14,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Objects;
 
-/**
- * 카카오 소셜 로그인을 처리하는 서비스 구현체.
- */
+/*카카오 소셜 로그인을 처리하는 서비스 구현체.*/
 @Service
 @RequiredArgsConstructor
 @Slf4j // 💡 로깅을 위한 어노테이션 추가
