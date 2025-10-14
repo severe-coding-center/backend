@@ -44,4 +44,12 @@ public interface RelationshipRepository extends JpaRepository<Relationship, Long
      */
     java.util.Optional<com.Guard.Back.Domain.Relationship> findByGuardian(User guardian);
 
+    /**
+     * 특정 피보호자와 연결된 모든 관계 목록을 조회합니다.
+     *
+     * @param protectedUser 관계 목록을 조회할 피보호자 엔티티.
+     * @return 해당 피보호자가 포함된 모든 관계의 리스트.
+     */
+    java.util.List<com.Guard.Back.Domain.Relationship> findAllByProtectedUser(ProtectedUser protectedUser);
+
 }

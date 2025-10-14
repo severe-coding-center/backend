@@ -110,4 +110,16 @@ public class UserService {
             throw new com.Guard.Back.Exception.CustomException(com.Guard.Back.Exception.ErrorCode.UNAUTHORIZED_ACCESS);
         }
     }
+
+    /**
+     * 보호자의 FCM 토큰을 찾아 갱신합니다.
+     * @param guardianId 토큰을 갱신할 보호자의 ID.
+     * @param fcmToken   새로운 FCM 토큰.
+     */
+    @Transactional
+    public void updateFcmToken(Long guardianId, String fcmToken) {
+        User guardian = userRepository.findById(guardianId)
+                .orElseThrow(() -> new CustomException(ErrorCode.GUARDIAN_NOT_FOUND));
+        guardian.setFcmToken(fcmToken);
+    }
 }

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import com.Guard.Back.Dto.UserInfoDto;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Map;
+
 /*회원 탈퇴 등 사용자 계정 관리 API 요청을 처리하는 컨트롤러.*/
 @RestController
 @RequestMapping("/api/users")
@@ -70,5 +72,24 @@ public class UserController {
 
         log.info("[회원 탈퇴] 사용자 ID: {}의 계정 삭제가 성공적으로 완료되었습니다.", currentUserId);
         return ResponseEntity.ok("회원 탈퇴가 성공적으로 처리되었습니다.");
+    }
+
+    /**
+     * 현재 로그인한 보호자의 FCM 디바이스 토큰을 갱신합니다.
+     *
+     * @param fcmTokenMap    요청 DTO. {"fcmToken": "..."} 형식의 JSON.
+     * @param authentication 현재 로그인한 보호자의 인증 정보.
+     * @return 성공 메시지.
+     */
+    @PostMapping("/fcm-token")
+    public ResponseEntity<String> updateFcmToken(@RequestBody Map<String, String> fcmTokenMap, Authentication authentication) {
+        Long currentUserId = Long.parseLong(authentication.getName());
+        String fcmToken = fcmTokenMap.get("fcmToken");
+
+        log.info("[FCM 토큰 갱신] 보호자 ID: {}의 FCM 토큰을 갱신합니다.", currentUserId);
+        userService.updateFcmToken(currentUserId, fcmToken);
+        log.info("[FCM 토큰 갱신] 보호자 ID: {}의 FCM 토큰 갱신이 완료되었습니다.", currentUserId);
+
+        return ResponseEntity.ok("FCM 토큰이 성공적으로 갱신되었습니다.");
     }
 }

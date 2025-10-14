@@ -53,6 +53,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/relationship/link", "/api/location/{protectedUserId}").hasRole("GUARDIAN")
                         // "/api/location" (POST) 경로는 PROTECTED 역할만 접근 허용
                         .requestMatchers("/api/location").hasRole("PROTECTED")
+                        // "/api/sos" 경로는 PROTECTED 역말만 접근 허용
+                        .requestMatchers("/api/sos").hasRole("PROTECTED")
                         // 위에 명시되지 않은 나머지 모든 요청은 인증된 사용자만 접근 허용
                         .anyRequest().authenticated()
                 )

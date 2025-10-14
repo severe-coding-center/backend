@@ -37,6 +37,10 @@ public class User {
     @Column(nullable = false)
     private String providerId;
 
+    /*푸시 알림을 위한 FCM 디바이스 토큰.*/
+    @Column(unique = true)
+    private String fcmToken;
+
     @Builder
     public User(String email, String nickname, String profileImage, OAuthProvider provider, String providerId) {
         this.email = email;
