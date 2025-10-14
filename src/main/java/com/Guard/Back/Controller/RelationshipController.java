@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/relationship")
@@ -16,12 +17,10 @@ public class RelationshipController {
     private final RelationshipService relationshipService;
 
     @PostMapping("/link")
-    public ResponseEntity<Void> link(@RequestBody LinkRequest request, Authentication authentication) { // 💡 타입 변경
-
-        String userType = (String) authentication.getCredentials();
-        if (!"GUARDIAN".equals(userType)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+    public ResponseEntity<Void> link(@Valid @RequestBody LinkRequest request, Authentication authentication) {
+        // 💡 [삭제] 역할 확인 로직을 SecurityConfig에 위임하고 삭제합니다.
+        // String userType = (String) authentication.getCredentials();
+        // if (!"GUARDIAN".equals(userType)) { ... }
 
         Long currentGuardianId = Long.parseLong(authentication.getName());
         relationshipService.createRelationship(request.linkingCode(), currentGuardianId);

@@ -1,8 +1,9 @@
 package com.Guard.Back.Controller;
 
 import com.Guard.Back.Domain.ProtectedUser;
-import com.Guard.Back.Dto.RegisterRequest;   // 💡 import 변경
-import com.Guard.Back.Dto.RegisterResponse;  // 💡 import 변경
+import com.Guard.Back.Domain.UserRole; // 💡 import 추가
+import com.Guard.Back.Dto.RegisterRequest;
+import com.Guard.Back.Dto.RegisterResponse;
 import com.Guard.Back.Jwt.JwtTokenProvider;
 import com.Guard.Back.Service.ProtectedUserService;
 import com.Guard.Back.Service.TokenService;
@@ -20,14 +21,15 @@ public class ProtectedUserController {
     private final TokenService tokenService;
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) { // 💡 타입 변경
+    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
         ProtectedUser pUser = protectedUserService.registerOrLogin(request.deviceId());
 
-        String accessToken = jwtTokenProvider.createAccessToken(pUser.getId(), "PROTECTED");
+        // 💡 [수정] "PROTECTED" 문자열 대신 UserRole.PROTECTED Enum을 사용합니다.
+        String accessToken = jwtTokenProvider.createAccessToken(pUser.getId(), UserRole.PROTECTED);
         String refreshToken = jwtTokenProvider.createRefreshToken();
 
         tokenService.saveOrUpdateRefreshToken(null, pUser, refreshToken);
 
-        return ResponseEntity.ok(new RegisterResponse(accessToken, refreshToken, pUser.getLinkingCode())); // 💡 타입 변경
+        return ResponseEntity.ok(new RegisterResponse(accessToken, refreshToken, pUser.getLinkingCode()));
     }
 }

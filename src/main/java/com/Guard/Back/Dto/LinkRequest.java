@@ -1,3 +1,4 @@
 package com.Guard.Back.Dto;
 
-public record LinkRequest(String linkingCode) {}
+import jakarta.validation.constraints.NotBlank;
+public record LinkRequest(@NotBlank String linkingCode) {} // 💡 @NotBlank 추가

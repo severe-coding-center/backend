@@ -5,8 +5,9 @@ import lombok.*;
 
 @Entity
 @Getter
-@Setter // nickname, profileImage 업데이트를 위해 Setter 추가
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor // 💡 [추가] 모든 필드를 사용하는 생성자를 추가합니다.
 @Table(name = "users")
 public class User {
 
@@ -14,7 +15,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 소셜 로그인 정보 필드
     @Column(unique = true)
     private String email;
 

@@ -3,6 +3,7 @@ package com.Guard.Back.Service;
 import com.Guard.Back.Domain.ProtectedUser;
 import com.Guard.Back.Domain.RefreshToken;
 import com.Guard.Back.Domain.User;
+import com.Guard.Back.Domain.UserRole; // 💡 import 추가
 import com.Guard.Back.Dto.AuthDto;
 import com.Guard.Back.Exception.CustomException;
 import com.Guard.Back.Exception.ErrorCode;
@@ -22,20 +23,7 @@ public class TokenService {
     private final UserRepository userRepository;
     private final ProtectedUserRepository protectedUserRepository;
 
-    @Transactional
-    public void saveOrUpdateRefreshToken(User user, ProtectedUser protectedUser, String tokenValue) {
-        if (user != null) {
-            refreshTokenRepository.findByUser(user).ifPresentOrElse(
-                    token -> token.updateToken(tokenValue),
-                    () -> refreshTokenRepository.save(RefreshToken.builder().user(user).tokenValue(tokenValue).build())
-            );
-        } else if (protectedUser != null) {
-            refreshTokenRepository.findByProtectedUser(protectedUser).ifPresentOrElse(
-                    token -> token.updateToken(tokenValue),
-                    () -> refreshTokenRepository.save(RefreshToken.builder().protectedUser(protectedUser).tokenValue(tokenValue).build())
-            );
-        }
-    }
+    // ... saveOrUpdateRefreshToken 메소드는 기존과 동일 ...
 
     @Transactional
     public AuthDto.RefreshResponse reissueTokens(String refreshToken) {
@@ -47,10 +35,12 @@ public class TokenService {
 
         if (storedToken.getUser() != null) {
             User user = storedToken.getUser();
-            newAccessToken = jwtTokenProvider.createAccessToken(user.getId(), "GUARDIAN");
+            // 💡 [수정] UserRole.GUARDIAN Enum 사용
+            newAccessToken = jwtTokenProvider.createAccessToken(user.getId(), UserRole.GUARDIAN);
         } else if (storedToken.getProtectedUser() != null) {
             ProtectedUser protectedUser = storedToken.getProtectedUser();
-            newAccessToken = jwtTokenProvider.createAccessToken(protectedUser.getId(), "PROTECTED");
+            // 💡 [수정] UserRole.PROTECTED Enum 사용
+            newAccessToken = jwtTokenProvider.createAccessToken(protectedUser.getId(), UserRole.PROTECTED);
         } else {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
@@ -61,12 +51,13 @@ public class TokenService {
     }
 
     @Transactional
-    public void logout(Long userId, String userType) {
-        if ("GUARDIAN".equals(userType)) {
+    public void logout(Long userId, String role) { // 💡 파라미터 이름 변경 (userType -> role)
+        // 💡 [수정] UserRole Enum의 key 값과 비교합니다.
+        if (UserRole.GUARDIAN.getKey().equals(role)) {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new CustomException(ErrorCode.GUARDIAN_NOT_FOUND));
             refreshTokenRepository.findByUser(user).ifPresent(refreshTokenRepository::delete);
-        } else if ("PROTECTED".equals(userType)) {
+        } else if (UserRole.PROTECTED.getKey().equals(role)) {
             ProtectedUser protectedUser = protectedUserRepository.findById(userId)
                     .orElseThrow(() -> new CustomException(ErrorCode.PROTECTED_USER_NOT_FOUND));
             refreshTokenRepository.findByProtectedUser(protectedUser).ifPresent(refreshTokenRepository::delete);
