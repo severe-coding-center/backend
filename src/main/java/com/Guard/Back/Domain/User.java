@@ -3,30 +3,51 @@ package com.Guard.Back.Domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * 보호자(소셜 로그인 사용자)의 정보를 정의하는 엔티티.
+ */
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor // 💡 [추가] 모든 필드를 사용하는 생성자를 추가합니다.
+@AllArgsConstructor
 @Table(name = "users")
 public class User {
 
+    /**
+     * 보호자의 고유 식별자 (자동 생성).
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * 소셜 로그인 제공자로부터 받은 이메일 (선택 사항).
+     */
     @Column(unique = true)
     private String email;
 
+    /**
+     * 소셜 로그인 제공자로부터 받은 닉네임.
+     */
     @Column(nullable = false)
     private String nickname;
 
+    /**
+     * 소셜 로그인 제공자로부터 받은 프로필 이미지 URL (선택 사항).
+     */
     private String profileImage;
 
+    /**
+     * 소셜 로그인 제공자 타입 (e.g., KAKAO).
+     */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OAuthProvider provider;
 
+    /**
+     * 소셜 로그인 제공자 내에서 사용자를 식별하는 고유 ID.
+     */
     @Column(nullable = false)
     private String providerId;
 
