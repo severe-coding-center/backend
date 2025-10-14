@@ -3,7 +3,7 @@ package com.Guard.Back.Service;
 import com.Guard.Back.Domain.ProtectedUser;
 import com.Guard.Back.Domain.RefreshToken;
 import com.Guard.Back.Domain.User;
-import com.Guard.Back.Domain.UserRole; // 💡 import 추가
+import com.Guard.Back.Domain.UserRole;
 import com.Guard.Back.Dto.AuthDto;
 import com.Guard.Back.Exception.CustomException;
 import com.Guard.Back.Exception.ErrorCode;
@@ -23,7 +23,24 @@ public class TokenService {
     private final UserRepository userRepository;
     private final ProtectedUserRepository protectedUserRepository;
 
-    // ... saveOrUpdateRefreshToken 메소드는 기존과 동일 ...
+    /**
+     * 💡 [추가] 이 메소드가 빠져있었습니다.
+     * Refresh Token을 DB에 저장하거나 이미 존재하면 값을 갱신합니다.
+     */
+    @Transactional
+    public void saveOrUpdateRefreshToken(User user, ProtectedUser protectedUser, String tokenValue) {
+        if (user != null) {
+            refreshTokenRepository.findByUser(user).ifPresentOrElse(
+                    token -> token.updateToken(tokenValue),
+                    () -> refreshTokenRepository.save(RefreshToken.builder().user(user).tokenValue(tokenValue).build())
+            );
+        } else if (protectedUser != null) {
+            refreshTokenRepository.findByProtectedUser(protectedUser).ifPresentOrElse(
+                    token -> token.updateToken(tokenValue),
+                    () -> refreshTokenRepository.save(RefreshToken.builder().protectedUser(protectedUser).tokenValue(tokenValue).build())
+            );
+        }
+    }
 
     @Transactional
     public AuthDto.RefreshResponse reissueTokens(String refreshToken) {
@@ -35,11 +52,9 @@ public class TokenService {
 
         if (storedToken.getUser() != null) {
             User user = storedToken.getUser();
-            // 💡 [수정] UserRole.GUARDIAN Enum 사용
             newAccessToken = jwtTokenProvider.createAccessToken(user.getId(), UserRole.GUARDIAN);
         } else if (storedToken.getProtectedUser() != null) {
             ProtectedUser protectedUser = storedToken.getProtectedUser();
-            // 💡 [수정] UserRole.PROTECTED Enum 사용
             newAccessToken = jwtTokenProvider.createAccessToken(protectedUser.getId(), UserRole.PROTECTED);
         } else {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
@@ -51,8 +66,7 @@ public class TokenService {
     }
 
     @Transactional
-    public void logout(Long userId, String role) { // 💡 파라미터 이름 변경 (userType -> role)
-        // 💡 [수정] UserRole Enum의 key 값과 비교합니다.
+    public void logout(Long userId, String role) {
         if (UserRole.GUARDIAN.getKey().equals(role)) {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new CustomException(ErrorCode.GUARDIAN_NOT_FOUND));

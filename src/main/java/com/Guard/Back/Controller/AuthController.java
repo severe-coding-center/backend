@@ -1,7 +1,7 @@
 package com.Guard.Back.Controller;
 
 import com.Guard.Back.Domain.User;
-import com.Guard.Back.Domain.UserRole; // 💡 import 추가
+import com.Guard.Back.Domain.UserRole;
 import com.Guard.Back.Dto.AuthDto.*;
 import com.Guard.Back.Jwt.JwtTokenProvider;
 import com.Guard.Back.Service.KakaoOAuthService;
@@ -11,13 +11,13 @@ import com.Guard.Back.Domain.OAuthProvider;
 import com.Guard.Back.Dto.OAuthUserInfoDto;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
+
 import java.io.IOException;
 import java.util.Collection;
-import org.springframework.security.core.GrantedAuthority;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -29,7 +29,9 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenService tokenService;
 
-    // ... (카카오 로그인 관련 부분은 기존과 동일) ...
+    // kakaoRedirectUri, kakaoClientId는 application-API-KEY.properties에서 주입됩니다.
+    // @Value 어노테이션은 더 이상 필요 없습니다.
+
     @GetMapping("/login/kakao/callback")
     public ResponseEntity<AuthResponse> kakaoLoginCallback(@RequestParam("code") String code) {
         OAuthUserInfoDto userInfo = kakaoOAuthService.getUserInfo(code);
@@ -45,14 +47,14 @@ public class AuthController {
                     return userRepository.save(newUser);
                 });
 
-        // 💡 [수정] "GUARDIAN" 문자열 대신 UserRole.GUARDIAN Enum을 사용합니다.
         String accessToken = jwtTokenProvider.createAccessToken(user.getId(), UserRole.GUARDIAN);
         String refreshToken = jwtTokenProvider.createRefreshToken();
+
+        // 💡 [수정] TokenService의 메소드 이름이 saveOrUpdateRefreshToken 입니다.
         tokenService.saveOrUpdateRefreshToken(user, null, refreshToken);
 
         return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
     }
-
 
     @PostMapping("/refresh")
     public ResponseEntity<RefreshResponse> refresh(@RequestBody RefreshRequest request) {
@@ -64,13 +66,12 @@ public class AuthController {
     public ResponseEntity<String> logout(Authentication authentication) {
         Long userId = Long.parseLong(authentication.getName());
 
-        // 💡 [수정] getCredentials() 대신 getAuthorities()를 사용하여 역할을 확인합니다.
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        String role = authorities.stream()
+        String role = authentication.getAuthorities().stream()
                 .findFirst()
                 .map(GrantedAuthority::getAuthority)
                 .orElse(null);
 
+        // 💡 [수정] 변경된 메소드 시그니처에 맞게 호출합니다.
         tokenService.logout(userId, role);
         return ResponseEntity.ok("로그아웃 되었습니다.");
     }
