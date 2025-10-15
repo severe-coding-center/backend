@@ -33,6 +33,19 @@ public class ProtectedUser {
     @Column(unique = true)
     private String linkingCode;
 
+    // 지오펜스(집) 위도
+    private Double homeLatitude;
+
+    // 지오펜스(집) 경도
+    private Double homeLongitude;
+
+    // 지오펜스 반경 (미터 단위)
+    private Integer geofenceRadius;
+
+    // 현재 지오펜스 내부에 있는지 여부 (상태 관리용)
+    @Column(nullable = false)
+    private boolean isInsideGeofence = true; // 기본값은 '내부'로 설정
+
     @Builder
     public ProtectedUser(String deviceId, String linkingCode) {
         this.deviceId = deviceId;

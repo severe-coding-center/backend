@@ -1,23 +1,21 @@
 package com.Guard.Back.Service;
 
-import com.Guard.Back.Domain.LocationLog;
-import com.Guard.Back.Domain.ProtectedUser;
-import com.Guard.Back.Domain.User;
+import com.Guard.Back.Domain.*;
 import com.Guard.Back.Dto.LocationRequest;
 import com.Guard.Back.Dto.LocationResponse;
 import com.Guard.Back.Exception.CustomException;
 import com.Guard.Back.Exception.ErrorCode;
-import com.Guard.Back.Repository.LocationLogRepository;
-import com.Guard.Back.Repository.ProtectedUserRepository;
-import com.Guard.Back.Repository.RelationshipRepository;
-import com.Guard.Back.Repository.UserRepository;
+import com.Guard.Back.Repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 
-/*위치 정보 저장 및 조회와 관련된 비즈니스 로직을 처리하는 서비스 클래스.*/
+/**
+ * 위치 정보 저장, 조회 및 지오펜스 관련 비즈니스 로직을 처리하는 서비스 클래스.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -27,9 +25,11 @@ public class LocationService {
     private final ProtectedUserRepository protectedUserRepository;
     private final UserRepository userRepository;
     private final RelationshipRepository relationshipRepository;
+    private final AlertLogRepository alertLogRepository;
+    private final FCMService fcmService;
 
     /**
-     * 피보호자의 위치 정보를 데이터베이스에 저장합니다.
+     * 피보호자의 위치 정보를 데이터베이스에 저장하고, 지오펜스 이탈 여부를 검사합니다.
      *
      * @param protectedUserId 위치를 저장할 피보호자의 ID.
      * @param request         저장할 위치 정보(위도, 경도)를 담은 DTO.
@@ -52,7 +52,90 @@ public class LocationService {
                 .build();
 
         locationLogRepository.save(newLog);
+
+        // 💡 [핵심] 위치 저장 후, 지오펜스 검사 로직을 호출합니다.
+        checkGeofence(protectedUser, request.latitude(), request.longitude());
+
         log.info("[위치저장] 피보호자 ID: {}의 위치 정보 저장을 성공적으로 완료했습니다.", protectedUserId);
+    }
+
+    /**
+     * 피보호자의 현재 위치를 기반으로 지오펜스 상태(진입/이탈)를 확인하고,
+     * 상태 변경 시 알림 발송 및 기록을 저장합니다.
+     *
+     * @param pUser  검사할 피보호자 엔티티.
+     * @param newLat 새로운 위치의 위도.
+     * @param newLon 새로운 위치의 경도.
+     */
+    private void checkGeofence(ProtectedUser pUser, double newLat, double newLon) {
+        // 지오펜스가 설정되지 않았으면 검사하지 않고 종료합니다.
+        if (pUser.getHomeLatitude() == null || pUser.getGeofenceRadius() == null) {
+            return;
+        }
+
+        double distance = haversine(pUser.getHomeLatitude(), pUser.getHomeLongitude(), newLat, newLon);
+        boolean wasInside = pUser.isInsideGeofence();
+        boolean isNowInside = distance <= pUser.getGeofenceRadius();
+
+        // 상태가 변경되었을 때만(안->밖 또는 밖->안) 알림/기록을 처리합니다.
+        if (wasInside && !isNowInside) { // 안 -> 밖 (이탈)
+            pUser.setInsideGeofence(false); // 현재 상태를 '외부'로 갱신
+            log.warn("[지오펜스] 피보호자 ID: {}가 안심 구역을 벗어났습니다! (거리: {}m)", pUser.getId(), String.format("%.2f", distance));
+
+            // 1. 이탈 기록을 DB에 저장합니다.
+            alertLogRepository.save(AlertLog.builder()
+                    .protectedUser(pUser)
+                    .eventType(EventType.GEOFENCE_EXIT)
+                    .message("안심 구역을 벗어났습니다.")
+                    .eventTime(LocalDateTime.now())
+                    .latitude(newLat).longitude(newLon)
+                    .build());
+
+            // 2. 모든 보호자에게 푸시 알림을 발송합니다.
+            notifyGuardians(pUser, "🚨 안심구역 이탈!", "자녀가 설정된 안심 구역을 벗어났습니다.");
+
+        } else if (!wasInside && isNowInside) { // 밖 -> 안 (진입)
+            pUser.setInsideGeofence(true); // 현재 상태를 '내부'로 갱신
+            log.info("[지오펜스] 피보호자 ID: {}가 안심 구역으로 돌아왔습니다.", pUser.getId());
+
+            // 1. 진입 기록을 DB에 저장합니다.
+            alertLogRepository.save(AlertLog.builder()
+                    .protectedUser(pUser)
+                    .eventType(EventType.GEOFENCE_ENTER)
+                    .message("안심 구역으로 돌아왔습니다.")
+                    .eventTime(LocalDateTime.now())
+                    .latitude(newLat).longitude(newLon)
+                    .build());
+
+            // 2. 보호자에게 푸시 알림 발송 (현재는 주석 처리, 필요 시 활성화)
+            // notifyGuardians(pUser, "안심구역 진입", "자녀가 안심 구역으로 돌아왔습니다.");
+        }
+    }
+
+    /**
+     * 특정 피보호자와 연결된 모든 보호자에게 FCM 푸시 알림을 발송하는 헬퍼 메소드.
+     */
+    private void notifyGuardians(ProtectedUser pUser, String title, String body) {
+        List<Relationship> relationships = relationshipRepository.findAllByProtectedUser(pUser);
+        for (Relationship rel : relationships) {
+            User guardian = rel.getGuardian();
+            fcmService.sendPushNotification(guardian.getFcmToken(), title, body);
+        }
+    }
+
+    /**
+     * 두 지점의 위도, 경도 좌표를 사용하여 거리를 계산하는 Haversine 공식 구현체.
+     * @return 두 지점 간의 거리 (미터 단위).
+     */
+    private double haversine(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371 * 1000; // 지구 반지름 (미터)
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
     }
 
     /**

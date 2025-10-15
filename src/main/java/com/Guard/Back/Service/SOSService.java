@@ -12,6 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import com.Guard.Back.Domain.AlertLog;
+import com.Guard.Back.Domain.EventType;
+import com.Guard.Back.Repository.AlertLogRepository;
+import java.time.LocalDateTime;
 
 /**
  * SOS 긴급 호출 비즈니스 로직을 처리하는 서비스 클래스.
@@ -24,6 +28,7 @@ public class SOSService {
     private final ProtectedUserRepository protectedUserRepository; // 💡 피보호자를 찾기 위해 추가
     private final RelationshipRepository relationshipRepository;
     private final FCMService fcmService; // 💡 FCM 서비스 주입
+    private final AlertLogRepository alertLogRepository;
 
     /**
      * 특정 피보호자와 연결된 모든 보호자에게 SOS 푸시 알림을 발송합니다.
@@ -34,6 +39,14 @@ public class SOSService {
         log.info("[SOS] 피보호자 ID: {}와 연결된 모든 보호자에게 푸시 알림 발송을 시작합니다.", protectedUserId);
         ProtectedUser protectedUser = protectedUserRepository.findById(protectedUserId)
                 .orElseThrow(() -> new CustomException(ErrorCode.PROTECTED_USER_NOT_FOUND));
+
+        alertLogRepository.save(AlertLog.builder()
+                .protectedUser(protectedUser)
+                .eventType(EventType.SOS)
+                .message("SOS 호출이 있었습니다.")
+                .eventTime(LocalDateTime.now())
+                // TODO: SOS 누른 시점의 위치를 앱에서 받아서 저장하면 더 좋음
+                .build());
 
         List<Relationship> relationships = relationshipRepository.findAllByProtectedUser(protectedUser);
 
