@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@Slf4j // 💡 로깅을 위한 어노테이션 추가
+@Slf4j
 public class UserController {
 
     private final UserService userService;

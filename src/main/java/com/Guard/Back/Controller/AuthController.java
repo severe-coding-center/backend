@@ -15,8 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView; // 💡 딥링크를 위한 import
-import org.springframework.web.util.UriComponentsBuilder;  // 💡 딥링크를 위한 import
+import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Collection;
 
 /**
