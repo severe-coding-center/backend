@@ -35,7 +35,7 @@ public class RelationshipService {
      * 이미 관계가 존재하거나, 보호자 수가 2명을 초과하는 경우 발생.
      */
     @Transactional
-    public void createRelationship(String linkingCode, Long guardianId) {
+    public Relationship createRelationship(String linkingCode, Long guardianId) {
         log.info("[관계 생성] 보호자 ID: {}, 연동 코드: '{}' - 관계 생성을 시작합니다.", guardianId, linkingCode);
         User guardian = userRepository.findById(guardianId)
                 .orElseThrow(() -> new CustomException(ErrorCode.GUARDIAN_NOT_FOUND));
@@ -57,7 +57,7 @@ public class RelationshipService {
             throw new CustomException(ErrorCode.MAX_GUARDIANS_REACHED);
         }
 
-        relationshipRepository.save(
+        Relationship newRelationship = relationshipRepository.save(
                 Relationship.builder()
                         .guardian(guardian)
                         .protectedUser(protectedUser)
@@ -70,6 +70,8 @@ public class RelationshipService {
             protectedUser.setLinkingCode(null);
         }
         log.info("[관계 생성] 보호자 ID: {}와 피보호자 ID: {}의 관계가 성공적으로 생성되었습니다.", guardianId, protectedUser.getId());
+
+        return newRelationship;
     }
 
     /**
