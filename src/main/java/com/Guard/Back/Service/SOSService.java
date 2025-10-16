@@ -34,7 +34,7 @@ public class SOSService {
      * 특정 피보호자와 연결된 모든 보호자에게 SOS 푸시 알림을 발송합니다.
      * @param protectedUserId SOS를 요청한 피보호자의 ID.
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public void sendSOSToGuardians(Long protectedUserId) {
         log.info("[SOS] 피보호자 ID: {}와 연결된 모든 보호자에게 푸시 알림 발송을 시작합니다.", protectedUserId);
         ProtectedUser protectedUser = protectedUserRepository.findById(protectedUserId)
