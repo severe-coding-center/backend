@@ -51,6 +51,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**", "/api/protected/register").permitAll()
                         // "/api/relationship/link", "/api/location/{...}" 경로는 GUARDIAN 역할만 접근 허용
                         .requestMatchers("/api/relationship/link", "/api/location/{protectedUserId}").hasRole("GUARDIAN")
+                        // 지오펜스 설정 API는 보호자(GUARDIAN)만 사용할 수 있도록 보안 규칙
+                        .requestMatchers("/api/geofence/setup").hasRole("GUARDIAN")
                         // "/api/geofence/**", /api/alerts/**" 경로는 GUARDIAN 역할만 접근 허용
                         .requestMatchers("/api/geofence/**", "/api/alerts/**").hasRole("GUARDIAN")
                         // "/api/location" (POST) 경로는 PROTECTED 역할만 접근 허용

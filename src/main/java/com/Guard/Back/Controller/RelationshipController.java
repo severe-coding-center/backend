@@ -2,6 +2,7 @@ package com.Guard.Back.Controller;
 
 import com.Guard.Back.Dto.LinkRequest;
 import com.Guard.Back.Service.RelationshipService;
+import com.Guard.Back.Domain.Relationship;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,15 +29,18 @@ public class RelationshipController {
      * @throws com.Guard.Back.Exception.CustomException 연동 코드가 유효하지 않거나 비즈니스 규칙 위반 시 발생.
      */
     @PostMapping("/link")
-    public ResponseEntity<Void> link(@Valid @RequestBody LinkRequest request, Authentication authentication) {
+    public ResponseEntity<Relationship> link(@Valid @RequestBody LinkRequest request, Authentication authentication) {
         Long currentGuardianId = Long.parseLong(authentication.getName());
         log.info("[관계 생성] 보호자 ID: {}가 연동 코드 '{}'를 사용하여 관계 생성을 요청했습니다.",
                 currentGuardianId, request.linkingCode());
 
-        relationshipService.createRelationship(request.linkingCode(), currentGuardianId);
+        // 서비스 호출 결과를 변수에 저장
+        Relationship newRelationship = relationshipService.createRelationship(request.linkingCode(), currentGuardianId);
 
         log.info("[관계 생성] 보호자 ID: {}의 관계 생성이 성공적으로 완료되었습니다.", currentGuardianId);
-        return ResponseEntity.ok().build();
+
+        // 생성된 관계 객체를 응답 본문에 담아 반환
+        return ResponseEntity.ok(newRelationship);
     }
 
     /**
