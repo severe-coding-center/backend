@@ -87,7 +87,6 @@ public class LocationService {
                     .protectedUser(pUser)
                     .eventType(EventType.GEOFENCE_EXIT)
                     .message("안심 구역을 벗어났습니다.")
-                    .eventTime(LocalDateTime.now())
                     .latitude(newLat).longitude(newLon)
                     .build());
 
@@ -103,7 +102,6 @@ public class LocationService {
                     .protectedUser(pUser)
                     .eventType(EventType.GEOFENCE_ENTER)
                     .message("안심 구역으로 돌아왔습니다.")
-                    .eventTime(LocalDateTime.now())
                     .latitude(newLat).longitude(newLon)
                     .build());
 
