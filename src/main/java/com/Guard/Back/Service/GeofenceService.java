@@ -49,4 +49,23 @@ public class GeofenceService {
         protectedUser.setHomeLongitude(null);
         protectedUser.setGeofenceRadius(null);
     }
-}
+
+    // 맵 다시 켰을 때 안전 반경 위치 불러오는 메소드
+    @Transactional(readOnly = true)
+    public GeofenceDto getGeofence(Long guardianId, Long protectedUserId) {
+        ProtectedUser protectedUser = protectedUserRepository.findById(protectedUserId)
+                .orElseThrow(() -> new CustomException(ErrorCode.PROTECTED_USER_NOT_FOUND));
+        validateRelationship(guardianId, protectedUser); // 기존 권한 검증 로직 재사용
+
+        // 설정된 지오펜스가 없으면 null을 반환
+        if (protectedUser.getHomeLatitude() == null) {
+            return null;
+        }
+
+        // 설정된 위도, 경도, 반경 정보를 DTO에 담아 반환
+        return new GeofenceDto(
+                protectedUser.getHomeLatitude(),
+                protectedUser.getHomeLongitude(),
+                protectedUser.getGeofenceRadius()
+        );
+    }}
