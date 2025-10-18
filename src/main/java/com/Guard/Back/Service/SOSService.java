@@ -44,7 +44,6 @@ public class SOSService {
                 .protectedUser(protectedUser)
                 .eventType(EventType.SOS)
                 .message("SOS 호출이 있었습니다.")
-                // TODO: SOS 누른 시점의 위치를 앱에서 받아서 저장하면 더 좋음
                 .build());
 
         List<Relationship> relationships = relationshipRepository.findAllByProtectedUser(protectedUser);
