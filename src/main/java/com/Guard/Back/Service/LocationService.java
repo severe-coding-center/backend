@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -88,6 +89,7 @@ public class LocationService {
                     .eventType(EventType.GEOFENCE_EXIT)
                     .message("안심 구역을 벗어났습니다.")
                     .latitude(newLat).longitude(newLon)
+                    .eventTime(ZonedDateTime.now())
                     .build());
 
             // 2. 모든 보호자에게 푸시 알림을 발송합니다.
@@ -103,6 +105,7 @@ public class LocationService {
                     .eventType(EventType.GEOFENCE_ENTER)
                     .message("안심 구역으로 돌아왔습니다.")
                     .latitude(newLat).longitude(newLon)
+                    .eventTime(ZonedDateTime.now())
                     .build());
 
             // 2. 보호자에게 푸시 알림 발송 (현재는 주석 처리, 필요 시 활성화)

@@ -15,7 +15,7 @@ import java.util.List;
 import com.Guard.Back.Domain.AlertLog;
 import com.Guard.Back.Domain.EventType;
 import com.Guard.Back.Repository.AlertLogRepository;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 /**
  * SOS 긴급 호출 비즈니스 로직을 처리하는 서비스 클래스.
@@ -44,6 +44,8 @@ public class SOSService {
                 .protectedUser(protectedUser)
                 .eventType(EventType.SOS)
                 .message("SOS 호출이 있었습니다.")
+                .eventTime(ZonedDateTime.now())
+                // TODO: SOS 누른 시점의 위치를 앱에서 받아서 저장하면 더 좋음
                 .build());
 
         List<Relationship> relationships = relationshipRepository.findAllByProtectedUser(protectedUser);
