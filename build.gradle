@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.2.5' // 버전을 안정적인 3.2.5로 맞추는 것을 권장합니다.
+	id 'org.springframework.boot' version '3.2.5'
 	id 'io.spring.dependency-management' version '1.1.4'
 }
 
@@ -8,7 +8,6 @@ group = 'com.Guard'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	// Java 버전을 17로 맞추는 것이 호환성에 좋습니다.
 	sourceCompatibility = '17'
 }
 
@@ -17,24 +16,34 @@ repositories {
 }
 
 dependencies {
-	// --- 필수 의존성 ---
+	// --- 기존 의존성 ---
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// --- JWT ---
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+	// --- 카카오 OAuth2 & WebClient ---
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 	// --- 편의 기능 ---
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
 
+	// Firebase Admin SDK
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
+
 	// --- 테스트 ---
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.mockito:mockito-core:5.7.0'
+	testImplementation 'org.mockito:mockito-junit-jupiter:5.7.0'
 }
 
 tasks.named('test') {

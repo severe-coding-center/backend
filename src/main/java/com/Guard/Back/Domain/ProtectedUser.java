@@ -4,35 +4,47 @@ import jakarta.persistence.*;
 import lombok.*;
 
 /**
- * 피보호자 정보를 저장하는 엔티티 클래스.
- * 개인정보 없이 기기 고유 ID를 통해 식별됩니다.
+ * 피보호자(앱 사용자)의 정보를 정의하는 엔티티.
+ * 소셜 로그인을 사용하지 않고, 기기 고유 ID를 통해 식별됩니다.
  */
 @Entity
 @Getter
-@Setter // 연동 후 linkingCode를 null로 변경하기 위해 Setter를 사용합니다.
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class ProtectedUser {
 
-    /**
-     * 피보호자의 고유 식별자 (자동 생성).
-     */
+    /*피보호자의 고유 식별자 (자동 생성).*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
      * 앱이 설치된 기기의 고유 ID.
-     * 이 값을 통해 사용자를 식별하고 자동 로그인 처리합니다.
+     * 사용자를 식별하는 주요 수단입니다.
      */
     @Column(nullable = false, unique = true)
     private String deviceId;
 
     /**
-     * 보호자와의 연동을 위한 일회성 6자리 코드.
-     * 연동이 완료되면 null 값으로 변경됩니다.
+     * 보호자와의 연동을 위해 사용되는 6자리 코드.
+     * 보호자와 연결되면 null이 될 수 있습니다.
      */
     @Column(unique = true)
     private String linkingCode;
+
+    // 지오펜스(집) 위도
+    private Double homeLatitude;
+
+    // 지오펜스(집) 경도
+    private Double homeLongitude;
+
+    // 지오펜스 반경 (미터 단위)
+    private Integer geofenceRadius;
+
+    // 현재 지오펜스 내부에 있는지 여부 (상태 관리용)
+    @Column(nullable = false)
+    private boolean isInsideGeofence = true; // 기본값은 '내부'로 설정
 
     @Builder
     public ProtectedUser(String deviceId, String linkingCode) {
