@@ -22,6 +22,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.Guard.Back.Domain.OAuthProvider;
+
 @ExtendWith(MockitoExtension.class)
 class LocationServiceTest {
 
@@ -41,8 +43,8 @@ class LocationServiceTest {
     @DisplayName("위치 조회 성공 - 보호자와 피보호자가 정상적으로 연결된 경우")
     void getLatestLocation_Success() {
         // given
-        User guardian = new User(1L, null, "보호자", null, null, "g1");
-        ProtectedUser protectedUser = new ProtectedUser(2L, "p1", "code");
+        User guardian = new User(1L, "guardian@test.com", "보호자", "profile.jpg", OAuthProvider.KAKAO, "g1", "fcmToken1");
+        ProtectedUser protectedUser = new ProtectedUser(2L, "p1", "code", 37.5, 127.0, 500, true);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(guardian));
         when(protectedUserRepository.findById(2L)).thenReturn(Optional.of(protectedUser));
@@ -63,8 +65,8 @@ class LocationServiceTest {
     @DisplayName("위치 조회 실패 - 관계가 없는 경우 CustomException 발생")
     void getLatestLocation_Fail_NoRelationship() {
         // given
-        User guardian = new User(1L, null, "보호자", null, null, "g1");
-        ProtectedUser protectedUser = new ProtectedUser(2L, "p1", "code");
+        User guardian = new User(1L, "guardian@test.com", "보호자", "profile.jpg", OAuthProvider.KAKAO, "g1", "fcmToken1");
+        ProtectedUser protectedUser = new ProtectedUser(2L, "p1", "code", 37.5, 127.0, 500, true);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(guardian));
         when(protectedUserRepository.findById(2L)).thenReturn(Optional.of(protectedUser));

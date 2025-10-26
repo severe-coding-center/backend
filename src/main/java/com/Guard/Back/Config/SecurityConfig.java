@@ -38,6 +38,9 @@ public class SecurityConfig {
                         // 인증 없이 누구나 접근 가능한 경로
                         .requestMatchers("/api/auth/**", "/api/protected/register").permitAll()
 
+                        .requestMatchers("/api/ocr/upload").authenticated()
+                        .requestMatchers("/api/tts").authenticated()
+
                         // GUARDIAN(보호자) 역할만 접근 가능한 경로
                         .requestMatchers(
                                 "/api/users/me",                        // 내 정보 조회
@@ -47,6 +50,7 @@ public class SecurityConfig {
                                 "/api/geofence/**",                     // 지오펜스 관련 모든 API
                                 "/api/alerts/**"                        // 알림 기록 관련 모든 API
                         ).hasRole("GUARDIAN")
+
 
                         // PROTECTED(피보호자) 역할만 접근 가능한 경로
                         .requestMatchers(
