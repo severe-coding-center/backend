@@ -20,7 +20,7 @@ public class FCMConfig {
     public void initialize() {
         try {
             // 💡 ClassPathResource 대신 FileInputStream으로 변경합니다.
-            // ClassPathResource resource = new ClassPathResource("fcm-service-account-key.json");
+            // ClassPathResource resource = new ClassPathResource("fcm-key.json");
             InputStream serviceAccount = new FileInputStream(fcmKeyPath); // 👈 이렇게 수정!
 
             FirebaseOptions options = FirebaseOptions.builder()

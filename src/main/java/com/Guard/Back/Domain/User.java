@@ -45,7 +45,7 @@ public class User {
     private UserRole role;
 
     @Builder
-    public User(String email, String nickname, String profileImage, OAuthProvider provider, String providerId, UserRole role) {
+    public User(String email, String nickname, String profileImage, OAuthProvider provider, String providerId, String fcmToken, UserRole role) {
         this.email = email;
         this.nickname = nickname;
         this.profileImage = profileImage;

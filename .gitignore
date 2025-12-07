@@ -38,4 +38,4 @@ out/
 
 ### API Key ###
 application-API-KEY.properties
-Fcm-Service-Account-Key.json
+fcm-key.json
