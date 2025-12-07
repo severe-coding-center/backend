@@ -3,6 +3,10 @@ package com.Guard.Back.Repository;
 import com.Guard.Back.Domain.LocationLog;
 import com.Guard.Back.Domain.ProtectedUser;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import java.time.LocalDateTime;
+
 import java.util.Optional;
 
 /**
@@ -17,4 +21,7 @@ public interface LocationLogRepository extends JpaRepository<LocationLog, Long> 
      * @return 가장 최신 위치 기록을 담은 Optional 객체. 기록이 없으면 Optional.empty()를 반환합니다.
      */
     Optional<LocationLog> findTopByProtectedUserOrderByIdDesc(ProtectedUser protectedUser);
+
+    @Query("SELECT COUNT(DISTINCT l.protectedUser) FROM LocationLog l WHERE l.recordedAt >= :time")
+    long countActiveUsersSince(@Param("time") LocalDateTime time);
 }

@@ -3,6 +3,7 @@ package com.Guard.Back.Repository;
 import com.Guard.Back.Domain.ProtectedUser;
 import com.Guard.Back.Domain.Relationship;
 import com.Guard.Back.Domain.User;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /*Relationship(관계) 엔티티에 대한 데이터 접근을 처리하는 Repository 인터페이스.*/
@@ -51,5 +52,11 @@ public interface RelationshipRepository extends JpaRepository<Relationship, Long
      * @return 해당 피보호자가 포함된 모든 관계의 리스트.
      */
     java.util.List<com.Guard.Back.Domain.Relationship> findAllByProtectedUser(ProtectedUser protectedUser);
+
+    // [NEW] 보호자별 피보호자 수
+    int countByGuardian(User guardian);
+
+    // [NEW] 피보호자의 대표 보호자 찾기
+    Optional<Relationship> findFirstByProtectedUser(ProtectedUser protectedUser);
 
 }

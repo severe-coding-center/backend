@@ -22,4 +22,7 @@ public class OAuthUserInfoDto {
 
     /*사용자의 프로필 이미지 URL.*/
     private String profileImage;
+
+    /*관리자 이메일*/
+    private String email;
 }

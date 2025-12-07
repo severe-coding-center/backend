@@ -5,5 +5,6 @@ package com.Guard.Back.Domain;
  * 현재는 KAKAO만 지원합니다.
  */
 public enum OAuthProvider {
-    KAKAO
+    KAKAO,
+    GOOGLE
 }

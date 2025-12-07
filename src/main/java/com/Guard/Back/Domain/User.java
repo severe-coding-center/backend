@@ -41,12 +41,17 @@ public class User {
     @Column(unique = true)
     private String fcmToken;
 
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
     @Builder
-    public User(String email, String nickname, String profileImage, OAuthProvider provider, String providerId) {
+    public User(String email, String nickname, String profileImage, OAuthProvider provider, String providerId, UserRole role) {
         this.email = email;
         this.nickname = nickname;
         this.profileImage = profileImage;
         this.provider = provider;
         this.providerId = providerId;
+        this.fcmToken = fcmToken;
+        this.role = role;
     }
 }

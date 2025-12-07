@@ -14,7 +14,10 @@ public enum UserRole {
     GUARDIAN("ROLE_GUARDIAN", "보호자"),
 
     /*피보호자 역할. Spring Security에서는 "ROLE_PROTECTED"로 인식됩니다.*/
-    PROTECTED("ROLE_PROTECTED", "피보호자");
+    PROTECTED("ROLE_PROTECTED", "피보호자"),
+
+    /*관리자 역할 */
+    ADMIN("ROLE_ADMIN", "관리자"); // [추가]
 
     /*Spring Security에서 사용하는 권한 Key. (e.g., "ROLE_GUARDIAN")*/
     private final String key;
