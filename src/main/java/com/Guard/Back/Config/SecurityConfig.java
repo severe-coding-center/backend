@@ -33,13 +33,19 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // 💡 [수정] HTTP 요청에 대한 접근 권한 설정을 더 명확하고 간결하게 정리합니다.
-                .authorizeHttpRequests(auth -> auth
-                        // 인증 없이 누구나 접근 가능한 경로
-                        .requestMatchers("/api/auth/**", "/api/protected/register").permitAll()
 
-                        .requestMatchers("/api/ocr/upload").authenticated()
-                        .requestMatchers("/api/tts").authenticated()
+                // 💡 [수정됨] 접근 권한 설정
+                .authorizeHttpRequests(auth -> auth
+                        // 1. 인증 없이 누구나 접근 가능한 경로 (여기에 oauth2, login 추가!)
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/api/protected/register",
+                                "/oauth2/**",   // 👈 [중요] 로그인 시작 주소 허용
+                                "/login/**",    // 👈 혹시 모를 기본 로그인 경로 허용
+                                "/favicon.ico"
+                        ).permitAll()
+
+                        .requestMatchers("/api/ocr/upload", "/api/tts").permitAll()
 
                         // GUARDIAN(보호자) 역할만 접근 가능한 경로
                         .requestMatchers(

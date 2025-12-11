@@ -31,6 +31,38 @@ public class AuthController {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenService tokenService;
+    @Value("${kakao.client-id}")
+    private String kakaoClientId;
+
+    @Value("${kakao.redirect-uri}")
+    private String kakaoRedirectUri;
+
+    @Value("${google.client-id}")
+    private String googleClientId;
+
+    @Value("${google.redirect-uri}")
+    private String googleRedirectUri;
+
+    // --- 로그인 시작 엔드포인트 추가 ---
+
+    @GetMapping("/login/kakao")
+    public RedirectView loginKakao() {
+        String kakaoAuthUrl = "https://kauth.kakao.com/oauth/authorize"
+                + "?client_id=" + kakaoClientId
+                + "&redirect_uri=" + kakaoRedirectUri
+                + "&response_type=code";
+        return new RedirectView(kakaoAuthUrl);
+    }
+
+    @GetMapping("/login/google")
+    public RedirectView loginGoogle() {
+        String googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth"
+                + "?client_id=" + googleClientId
+                + "&redirect_uri=" + googleRedirectUri
+                + "&response_type=code"
+                + "&scope=email%20profile";
+        return new RedirectView(googleAuthUrl);
+    }
 
     // 💡 [수정] 필드는 클래스 상단에 모아두는 것이 관례입니다.
     @Value("${admin.web.url}")
