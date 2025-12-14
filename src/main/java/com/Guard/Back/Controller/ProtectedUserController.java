@@ -24,10 +24,10 @@ public class ProtectedUserController {
     private final TokenService tokenService;
 
     /**
-     * 피보호자의 기기 ID를 받아 등록 또는 로그인을 처리하고, JWT 토큰과 연동 코드를 발급합니다.
-     * 이 API는 인증 없이 접근 가능합니다.
+     * 피보호자의 기기 ID를 받아 등록 또는 로그인을 처리하고, JWT 토큰과 연동 코드를 발급
+     * 이 API는 인증 없이 접근
      *
-     * @param request 요청 DTO. 피보호자의 고유 기기 ID(deviceId)를 포함합니다.
+     * @param request 요청 DTO. 피보호자의 고유 기기 ID(deviceId)를 포함
      * @return 성공 시 Access Token, Refresh Token, 연동 코드가 담긴 DTO.
      */
     @PostMapping("/register")

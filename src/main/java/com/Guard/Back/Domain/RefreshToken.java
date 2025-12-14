@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 자동 로그인을 위한 Refresh Token을 저장하는 엔티티.
- * Access Token이 만료되었을 때 새로운 토큰을 발급받는 데 사용됩니다.
+ * Access Token이 만료되었을 때 새로운 토큰을 발급받는 데 사용
  */
 @Entity
 @Getter
@@ -20,13 +20,12 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /*실제 Refresh Token의 값. 이 값으로 DB에서 토큰을 조회합니다.*/
+    /*실제 Refresh Token의 값. 이 값으로 DB에서 토큰을 조회*/
     @Column(nullable = false, unique = true)
     private String tokenValue;
 
     /**
      * 이 토큰의 주인인 보호자(User).
-     * 보호자가 로그인한 경우에만 값이 존재하며, protectedUser와는 상호 배타적입니다.
      */
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", unique = true)
@@ -34,7 +33,6 @@ public class RefreshToken {
 
     /**
      * 이 토큰의 주인인 피보호자(ProtectedUser).
-     * 피보호자가 로그인한 경우에만 값이 존재하며, user와는 상호 배타적입니다.
      */
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "protected_user_id", unique = true)

@@ -22,7 +22,7 @@ public class TtsController {
     private final TtsService ttsService;
 
     /**
-     * 프론트엔드에서 텍스트를 받아 AI 서버에 TTS 요청을 보냅니다.
+     * 프론트엔드에서 텍스트를 받아 AI 서버에 TTS 요청 전송
      * @param ttsRequest 텍스트가 담긴 DTO
      * @return MP3 오디오 파일 (byte[])
      */

@@ -12,6 +12,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 @Service
 @RequiredArgsConstructor
@@ -53,8 +55,12 @@ public class AdminService {
     }
 
     private List<SosLogDto> getSosLogsInternal(int limit) {
-        return alertLogRepository.findByEventTypeOrderByEventTimeDesc(EventType.SOS).stream()
-                .limit(limit)
+        // DB에서 조회 시 LIMIT과 정렬 조건을 설정
+        // PageRequest.of(페이지번호, 조회개수, 정렬)
+        PageRequest pageRequest = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "eventTime"));
+
+        // 스트림과 limit() 대신, DB에 직접 제한을 요청
+        return alertLogRepository.findByEventType(EventType.SOS, pageRequest).stream()
                 .map(log -> {
                     String guardianName = relationshipRepository.findFirstByProtectedUser(log.getProtectedUser())
                             .map(r -> r.getGuardian().getNickname()).orElse("연결 없음");

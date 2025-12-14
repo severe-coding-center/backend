@@ -5,7 +5,7 @@ import lombok.*;
 
 /**
  * 피보호자(앱 사용자)의 정보를 정의하는 엔티티.
- * 소셜 로그인을 사용하지 않고, 기기 고유 ID를 통해 식별됩니다.
+ * 소셜 로그인을 사용하지 않고, 기기 고유 ID를 통해 식별
  */
 @Entity
 @Getter
@@ -21,14 +21,13 @@ public class ProtectedUser {
 
     /**
      * 앱이 설치된 기기의 고유 ID.
-     * 사용자를 식별하는 주요 수단입니다.
      */
     @Column(nullable = false, unique = true)
     private String deviceId;
 
     /**
      * 보호자와의 연동을 위해 사용되는 6자리 코드.
-     * 보호자와 연결되면 null이 될 수 있습니다.
+     * 보호자와 연결되면 null 가능
      */
     @Column(unique = true)
     private String linkingCode;

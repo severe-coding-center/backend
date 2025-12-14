@@ -27,7 +27,7 @@ public class TokenService {
     private final ProtectedUserRepository protectedUserRepository;
 
     /**
-     * 사용자의 Refresh Token을 데이터베이스에 저장하거나 갱신합니다.
+     * 사용자의 Refresh Token을 데이터베이스에 저장하거나 갱신.
      *
      * @param user          토큰의 주인인 보호자 (피보호자일 경우 null).
      * @param protectedUser 토큰의 주인인 피보호자 (보호자일 경우 null).
@@ -51,7 +51,7 @@ public class TokenService {
     }
 
     /**
-     * 유효한 Refresh Token을 받아 새로운 Access Token과 Refresh Token을 재발급합니다.
+     * 유효한 Refresh Token을 받아 새로운 Access Token과 Refresh Token을 재발급
      *
      * @param refreshToken 재발급을 요청하는 기존 Refresh Token.
      * @return 새로운 Access Token과 Refresh Token이 담긴 DTO.
@@ -89,7 +89,7 @@ public class TokenService {
     }
 
     /**
-     * 사용자의 로그아웃을 처리합니다. DB에 저장된 Refresh Token을 삭제합니다.
+     * 사용자의 로그아웃을 처리. DB에 저장된 Refresh Token을 삭제
      *
      * @param userId 로그아웃할 사용자의 ID.
      * @param role   로그아웃할 사용자의 역할 ("ROLE_GUARDIAN" 또는 "ROLE_PROTECTED").

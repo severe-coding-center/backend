@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 public record LinkRequest(
         /*
          * 피보호자의 앱 화면에 표시되는 6자리 연동 코드.
-         * null이거나 비어있을 수 없습니다.
+         * null 허용 안함.
          */
         @NotBlank
         String linkingCode

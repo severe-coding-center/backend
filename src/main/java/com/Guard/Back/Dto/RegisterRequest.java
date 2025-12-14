@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 public record RegisterRequest(
         /*
          * 피보호자의 앱이 설치된 기기의 고유 ID.
-         * null이거나 비어있을 수 없습니다.
+         * null 허용 안함.
          */
         @NotBlank
         String deviceId

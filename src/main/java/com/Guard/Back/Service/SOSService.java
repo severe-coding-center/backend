@@ -25,13 +25,13 @@ import java.time.ZonedDateTime;
 @Slf4j
 public class SOSService {
 
-    private final ProtectedUserRepository protectedUserRepository; // 💡 피보호자를 찾기 위해 추가
+    private final ProtectedUserRepository protectedUserRepository;
     private final RelationshipRepository relationshipRepository;
-    private final FCMService fcmService; // 💡 FCM 서비스 주입
+    private final FCMService fcmService;
     private final AlertLogRepository alertLogRepository;
 
     /**
-     * 특정 피보호자와 연결된 모든 보호자에게 SOS 푸시 알림을 발송합니다.
+     * 특정 피보호자와 연결된 모든 보호자에게 SOS 푸시 알림을 발송
      * @param protectedUserId SOS를 요청한 피보호자의 ID.
      */
     @Transactional
@@ -45,14 +45,13 @@ public class SOSService {
                 .eventType(EventType.SOS)
                 .message("SOS 호출이 있었습니다.")
                 .eventTime(ZonedDateTime.now())
-                // TODO: SOS 누른 시점의 위치를 앱에서 받아서 저장하면 더 좋음
                 .build());
 
         List<Relationship> relationships = relationshipRepository.findAllByProtectedUser(protectedUser);
 
         if (relationships.isEmpty()) {
             log.warn("[SOS] 피보호자 ID: {}는 연결된 보호자가 없어 메시지를 발송할 수 없습니다.", protectedUserId);
-            return; // 연결된 보호자가 없으면 조용히 종료
+            return;
         }
 
         for (Relationship relationship : relationships) {

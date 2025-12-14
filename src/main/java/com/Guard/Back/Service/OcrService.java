@@ -20,17 +20,15 @@ import java.io.IOException;
 @Slf4j
 public class OcrService {
     private final WebClient webClient;
-    // ❌ private final TtsService ttsService; // TtsService 주입 제거!
 
     @Value("${ai.ocr.server.url}") // application.properties의 '/ocr-read' 주소
     private String ocrServerUrl;
 
     /**
-     * 이미지를 AI 서버(/ocr-read)로 보내 OCR 후 TTS 변환된 MP3 오디오 데이터를 받아옵니다.
+     * 이미지를 AI 서버(/ocr-read)로 보내 OCR 후 TTS 변환된 MP3 오디오 데이터를 받음.
      * @param imageFile 프론트엔드에서 받은 이미지 파일
      * @return MP3 오디오 데이터 (byte[]) 또는 텍스트 없음 시 null
      */
-    // 💡 반환 타입 byte[] 유지 (최종 목표와 일치)
     public byte[] getAudioFromImage(MultipartFile imageFile) {
         log.info("[OCR+TTS 서비스] AI 서버({})로 이미지 전송 및 오디오 요청 시작", ocrServerUrl);
 
@@ -49,7 +47,7 @@ public class OcrService {
         }
 
         try {
-            // 💡 AI 서버 '/ocr-read' 호출 후 바로 byte[] 받기
+            // AI 서버 '/ocr-read' 호출 후 바로 byte[] 받기
             byte[] audioData = webClient.post()
                     .uri(ocrServerUrl) // AI 서버 /ocr-read 엔드포인트
                     .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -64,8 +62,6 @@ public class OcrService {
                     .bodyToMono(byte[].class) // MP3 오디오 데이터(byte 배열)로 바로 변환
                     .block(); // 비동기 응답 대기
 
-            // ❌ OCR 결과 텍스트를 받아 TtsService를 호출하는 로직 제거!
-
             if (audioData != null) {
                 log.info("[OCR+TTS 서비스] AI 서버로부터 오디오 데이터를 성공적으로 수신했습니다.");
             }
@@ -77,5 +73,4 @@ public class OcrService {
         }
     }
 
-    // ❌ performOcr() 메소드 제거 (이제 필요 없음)
 }

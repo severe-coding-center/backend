@@ -18,7 +18,7 @@ public class UserInfoDto {
 
     /**
      * 보호자의 경우, 연결된 피보호자의 ID.
-     * 피보호자이거나 연결된 피보호자가 없으면 null이 됩니다.
+     * 피보호자이거나 연결된 피보호자가 없으면 null
      */
     private Long linkedUserId;
 }

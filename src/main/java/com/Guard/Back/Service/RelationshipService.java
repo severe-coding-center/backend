@@ -26,8 +26,8 @@ public class RelationshipService {
     private final RelationshipRepository relationshipRepository;
 
     /**
-     * 연동 코드를 사용하여 보호자와 피보호자 간의 관계를 생성합니다.
-     * 한 명의 피보호자는 최대 2명의 보호자와 연결될 수 있습니다.
+     * 연동 코드를 사용하여 보호자와 피보호자 간의 관계를 생성
+     * 한 명의 피보호자는 최대 2명의 보호자와 연결 가능
      *
      * @param linkingCode   피보호자의 유효한 연동 코드.
      * @param guardianId    관계를 맺으려는 보호자의 ID.
@@ -64,7 +64,7 @@ public class RelationshipService {
                         .build()
         );
 
-        // 2명의 보호자가 모두 연결되면, 연동 코드를 비활성화(null) 처리합니다.
+        // 2명의 보호자가 모두 연결되면, 연동 코드를 비활성화(null) 처리
         if (existingGuardians + 1 == 2) {
             log.info("[관계 생성] 피보호자 ID: {}의 보호자가 2명이 되어 연동 코드를 비활성화합니다.", protectedUser.getId());
             protectedUser.setLinkingCode(null);
@@ -75,8 +75,8 @@ public class RelationshipService {
     }
 
     /**
-     * 특정 관계를 삭제(해제)합니다.
-     * 관계에 포함된 보호자 또는 피보호자 본인만 삭제할 수 있습니다.
+     * 특정 관계를 삭제(해제).
+     * 관계에 포함된 보호자 또는 피보호자 본인만 삭제 가능.
      *
      * @param relationshipId  삭제할 관계의 고유 ID.
      * @param currentUserId   삭제를 요청한 사용자의 ID.
@@ -100,7 +100,7 @@ public class RelationshipService {
 
         relationshipRepository.delete(relationship);
 
-        // 관계가 해제되어 보호자가 2명 미만이 되면, 새로운 연동 코드를 발급합니다.
+        // 관계가 해제되어 보호자가 2명 미만이 되면, 새로운 연동 코드를 발급
         ProtectedUser protectedUser = relationship.getProtectedUser();
         if (protectedUser.getLinkingCode() == null) {
             String newLinkingCode = UUID.randomUUID().toString().substring(0, 6).toUpperCase();

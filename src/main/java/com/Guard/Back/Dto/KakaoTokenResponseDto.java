@@ -5,9 +5,9 @@ import lombok.NoArgsConstructor;
 
 /**
  * 카카오 서버에 인가 코드를 보내고 Access Token을 요청했을 때,
- * 그 응답을 매핑하기 위한 데이터 전송 객체(DTO)입니다.
- * <p>
- * 카카오 API의 응답 필드명(snake_case)과 일치시켜 JSON을 자동으로 파싱합니다.
+ * 그 응답을 매핑하기 위한 데이터 전송 객체(DTO).
+ *
+ * 카카오 API의 응답 필드명(snake_case)과 일치시켜 JSON을 자동으로 파싱.
  */
 @Getter
 @NoArgsConstructor
@@ -15,7 +15,7 @@ public class KakaoTokenResponseDto {
     /*사용자 인증에 사용되는 Access Token.*/
     private String access_token;
 
-    /*토큰 타입. 보통 "bearer"로 고정됩니다.*/
+    /*토큰 타입. "bearer"로 고정.*/
     private String token_type;
 
     /*Access Token 갱신에 사용되는 Refresh Token.*/

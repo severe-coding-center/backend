@@ -9,8 +9,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfig {
 
     /**
-     * 애플리케이션 전역에서 사용될 WebClient Bean을 생성합니다.
-     * 이 Bean은 다른 서비스(@Service) 클래스에 주입되어 사용됩니다.
+     * 애플리케이션 전역에서 사용될 WebClient Bean을 생성
+     * 이 Bean은 다른 서비스(@Service) 클래스에 주입되어 사용
      *
      * @return 기본 설정으로 생성된 WebClient 객체.
      */

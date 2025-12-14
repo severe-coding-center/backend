@@ -7,21 +7,21 @@ import java.time.LocalDateTime;
 public record LocationRequest(
         /*
          * 현재 위치의 위도.
-         * null일 수 없습니다.
+         * null 허용 안함.
          */
         @NotNull
         Double latitude,
 
         /*
          * 현재 위치의 경도.
-         * null일 수 없습니다.
+         * null 허용 안함.
          */
         @NotNull
         Double longitude,
 
         /*
          * 위치가 기록된 시간.
-         * 클라이언트에서 보내지 않으면 서버에서 현재 시간으로 자동 설정됩니다.
+         * 클라이언트에서 보내지 않으면 서버에서 현재 시간으로 자동 설정
          */
         LocalDateTime recordedAt
 ) {}

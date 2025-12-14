@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     /**
-     * 우리가 직접 정의한 비즈니스 예외(CustomException)를 처리합니다.
+     * 우리가 직접 정의한 비즈니스 예외(CustomException)를 처리
      */
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
@@ -22,16 +22,16 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * /@Valid 어노테이션을 통한 유효성 검사 실패 시 발생하는 예외를 처리합니다.
-     * 주로 클라이언트가 잘못된 형식의 데이터를 보냈을 때 발생합니다. (400 Bad Request)
+     * /@Valid 어노테이션을 통한 유효성 검사 실패 시 발생하는 예외를 처리
+     * 주로 클라이언트가 잘못된 형식의 데이터를 보냈을 때 발생(400 Bad Request)
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
-        // 유효성 검사 실패 시 첫 번째 에러 메시지를 사용합니다.
+        // 유효성 검사 실패 시 첫 번째 에러 메시지를 사용
         String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         log.warn("유효성 검사 실패: {}", errorMessage);
 
-        // ErrorResponse DTO를 직접 생성하여 400 상태 코드와 함께 반환합니다.
+        // ErrorResponse DTO를 직접 생성하여 400 상태 코드와 함께 반환
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.name())
@@ -41,8 +41,8 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 위에서 처리하지 못한 모든 예외를 처리하는 최후의 보루 역할을 합니다.
-     * 주로 서버 내부의 예상치 못한 오류(NullPointerException 등) 발생 시 호출됩니다. (500 Internal Server Error)
+     * 위에서 처리하지 못한 모든 예외를 처리하는 역할
+     * 서버 내부의 예상치 못한 오류(NullPointerException 등) 발생 시 호출(500 Internal Server Error)
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleAllUncaughtException(Exception e) {

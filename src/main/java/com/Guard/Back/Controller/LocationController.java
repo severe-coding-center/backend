@@ -19,10 +19,10 @@ public class LocationController {
     private final LocationService locationService;
 
     /**
-     * 피보호자가 자신의 현재 위치 정보를 서버에 업로드(저장)합니다.
-     * SecurityConfig에 의해 PROTECTED 역할만 접근 가능합니다.
+     * 피보호자가 자신의 현재 위치 정보를 서버에 업로드(저장)
+     * SecurityConfig에 의해 PROTECTED 역할만 접근
      *
-     * @param request        요청 DTO. 위도, 경도, 기록 시간 정보를 포함합니다.
+     * @param request        요청 DTO. 위도, 경도, 기록 시간 정보를 포함
      * @param authentication 현재 로그인한 피보호자의 인증 정보.
      * @return 성공 시 200 OK.
      */
@@ -39,8 +39,8 @@ public class LocationController {
     }
 
     /**
-     * 보호자가 자신과 연결된 특정 피보호자의 가장 최신 위치 정보를 조회합니다.
-     * SecurityConfig에 의해 GUARDIAN 역할만 접근 가능합니다.
+     * 보호자가 자신과 연결된 특정 피보호자의 가장 최신 위치 정보를 조회
+     * SecurityConfig에 의해 GUARDIAN 역할만 접근
      *
      * @param protectedUserId 조회하려는 피보호자의 ID.
      * @param authentication  현재 로그인한 보호자의 인증 정보.

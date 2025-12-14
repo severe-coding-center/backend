@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 /**
  * 애플리케이션에서 발생하는 모든 비즈니스 예외의 종류를 정의하는 Enum.
- * 각 에러 코드는 HTTP 상태 코드와 클라이언트에게 전달될 메시지를 포함합니다.
+ * 각 에러 코드는 HTTP 상태 코드와 클라이언트에게 전달될 메시지를 포함
  */
 @Getter
 @AllArgsConstructor

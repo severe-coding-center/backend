@@ -30,7 +30,7 @@ public class LocationService {
     private final FCMService fcmService;
 
     /**
-     * 피보호자의 위치 정보를 데이터베이스에 저장하고, 지오펜스 이탈 여부를 검사합니다.
+     * 피보호자의 위치 정보를 데이터베이스에 저장하고, 지오펜스 이탈 여부를 검사
      *
      * @param protectedUserId 위치를 저장할 피보호자의 ID.
      * @param request         저장할 위치 정보(위도, 경도)를 담은 DTO.
@@ -54,7 +54,7 @@ public class LocationService {
 
         locationLogRepository.save(newLog);
 
-        // 💡 [핵심] 위치 저장 후, 지오펜스 검사 로직을 호출합니다.
+        // 위치 저장 후, 지오펜스 검사 로직을 호출
         checkGeofence(protectedUser, request.latitude(), request.longitude());
 
         log.info("[위치저장] 피보호자 ID: {}의 위치 정보 저장을 성공적으로 완료했습니다.", protectedUserId);
@@ -62,7 +62,7 @@ public class LocationService {
 
     /**
      * 피보호자의 현재 위치를 기반으로 지오펜스 상태(진입/이탈)를 확인하고,
-     * 상태 변경 시 알림 발송 및 기록을 저장합니다.
+     * 상태 변경 시 알림 발송 및 기록을 저장
      *
      * @param pUser  검사할 피보호자 엔티티.
      * @param newLat 새로운 위치의 위도.
@@ -78,7 +78,7 @@ public class LocationService {
         boolean wasInside = pUser.isInsideGeofence();
         boolean isNowInside = distance <= pUser.getGeofenceRadius();
 
-        // 상태가 변경되었을 때만(안->밖 또는 밖->안) 알림/기록을 처리합니다.
+        // 상태가 변경되었을 때만(안->밖 또는 밖->안) 알림/기록을 처리
         if (wasInside && !isNowInside) { // 안 -> 밖 (이탈)
             pUser.setInsideGeofence(false); // 현재 상태를 '외부'로 갱신
             log.warn("[지오펜스] 피보호자 ID: {}가 안심 구역을 벗어났습니다! (거리: {}m)", pUser.getId(), String.format("%.2f", distance));
@@ -92,7 +92,7 @@ public class LocationService {
                     .eventTime(ZonedDateTime.now())
                     .build());
 
-            // 2. 모든 보호자에게 푸시 알림을 발송합니다.
+            // 2. 모든 보호자에게 푸시 알림을 발송
             notifyGuardians(pUser, "🚨 안심구역 이탈!", "연결된 사용자가 설정된 안심 구역을 벗어났습니다.");
 
         } else if (!wasInside && isNowInside) { // 밖 -> 안 (진입)
@@ -108,8 +108,6 @@ public class LocationService {
                     .eventTime(ZonedDateTime.now())
                     .build());
 
-            // 2. 보호자에게 푸시 알림 발송 (현재는 주석 처리, 필요 시 활성화)
-            // notifyGuardians(pUser, "안심구역 진입", "자녀가 안심 구역으로 돌아왔습니다.");
         }
     }
 
@@ -140,8 +138,8 @@ public class LocationService {
     }
 
     /**
-     * 특정 피보호자의 가장 최신 위치 정보를 조회합니다.
-     * 요청한 보호자가 해당 피보호자와 관계를 맺고 있는지 반드시 확인합니다.
+     * 특정 피보호자의 가장 최신 위치 정보를 조회
+     * 요청한 보호자가 해당 피보호자와 관계를 맺고 있는지 확인
      *
      * @param protectedUserId 조회 대상 피보호자의 ID.
      * @param guardianId      요청을 보낸 보호자의 ID (권한 검증용).

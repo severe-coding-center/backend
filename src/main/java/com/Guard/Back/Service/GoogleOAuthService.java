@@ -60,7 +60,7 @@ public class GoogleOAuthService implements OAuthService {
                 .provider(OAuthProvider.GOOGLE)
                 .providerId(userInfo.getId())
                 .nickname(userInfo.getName())
-                .email(userInfo.getEmail()) // 이메일!
+                .email(userInfo.getEmail())
                 .profileImage(userInfo.getPicture())
                 .build();
     }

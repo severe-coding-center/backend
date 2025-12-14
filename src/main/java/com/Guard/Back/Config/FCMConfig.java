@@ -17,7 +17,6 @@ public class FCMConfig {
     @PostConstruct
     public void initialize() {
         try {
-            // [수정] FileInputStream 대신 ClassPathResource 사용 (Docker/Jar 호환)
             // src/main/resources/fcm-key.json 파일을 찾습니다.
             ClassPathResource resource = new ClassPathResource("fcm-key.json");
 

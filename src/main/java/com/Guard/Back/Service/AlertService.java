@@ -28,8 +28,8 @@ public class AlertService {
     private final RelationshipRepository relationshipRepository;
 
     /**
-     * 특정 피보호자의 모든 알림 기록을 최신순으로 조회합니다.
-     * 요청한 보호자가 해당 피보호자와 관계를 맺고 있는지 반드시 확인합니다.
+     * 특정 피보호자의 모든 알림 기록을 최신순으로 조회
+     * 요청한 보호자가 해당 피보호자와 관계를 맺고 있는지 확인
      *
      * @param protectedUserId 기록을 조회할 피보호자의 ID.
      * @param guardianId      요청을 보낸 보호자의 ID (권한 검증용).

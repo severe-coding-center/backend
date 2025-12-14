@@ -19,7 +19,7 @@ public class LocationLog {
 
     /**
      * 이 위치 기록의 주인인 피보호자.
-     * ProtectedUser 엔티티를 참조합니다.
+     * ProtectedUser 엔티티를 참조
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "protected_user_id", nullable = false)

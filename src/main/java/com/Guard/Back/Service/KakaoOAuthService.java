@@ -17,7 +17,7 @@ import java.util.Objects;
 /*카카오 소셜 로그인을 처리하는 서비스 구현체.*/
 @Service
 @RequiredArgsConstructor
-@Slf4j // 💡 로깅을 위한 어노테이션 추가
+@Slf4j
 public class KakaoOAuthService implements OAuthService {
 
     private final WebClient webClient;
@@ -34,7 +34,7 @@ public class KakaoOAuthService implements OAuthService {
     }
 
     /**
-     * 카카오 서버로부터 인가 코드를 받아 사용자 정보를 조회합니다.
+     * 카카오 서버로부터 인가 코드를 받아 사용자 정보를 조회
      * 1. 인가 코드로 Access Token 요청
      * 2. Access Token으로 사용자 정보 요청
      *
@@ -61,8 +61,6 @@ public class KakaoOAuthService implements OAuthService {
         Objects.requireNonNull(tokenResponse, "카카오 토큰 응답이 null입니다.");
         String accessToken = tokenResponse.getAccess_token();
         log.info("[카카오 로그인] 카카오 Access Token을 성공적으로 발급받았습니다.");
-        // 보안을 위해 실제 토큰 값을 로그에 남기지 않거나, 디버그 레벨로 남기는 것이 좋습니다.
-        // log.debug("[카카오 로그인] Access Token: {}", accessToken);
 
         // 2. Access Token을 사용하여 사용자 정보 요청
         log.info("[카카오 로그인] Access Token을 사용하여 카카오 사용자 정보 요청을 시작합니다.");

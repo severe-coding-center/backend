@@ -22,7 +22,7 @@ public class OcrController {
     private final OcrService ocrService; // OCR+TTS 처리를 담당하는 서비스
 
     /**
-     * 프론트엔드에서 이미지 파일을 받아 OCR+TTS 처리된 MP3 오디오 데이터를 반환합니다.
+     * 프론트엔드에서 이미지 파일을 받아 OCR+TTS 처리된 MP3 오디오 데이터를 반환
      * @param imageFile 프론트에서 'image'라는 키로 보낸 사진 파일
      * @return MP3 오디오 파일 (byte[]) 또는 텍스트 없음(204) 응답
      */
@@ -35,12 +35,12 @@ public class OcrController {
             // 빈 파일 요청 시 400 Bad Request 응답 (에러 메시지는 GlobalExceptionHandler가 처리)
             // 혹은 여기서 간단한 메시지 반환도 가능 (하지만 일관성을 위해 예외 발생 권장)
             // return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("빈 이미지 파일입니다.".getBytes());
-            // 여기서는 간단하게 400 상태 코드만 반환
+            // 400 상태 코드만 반환
             return ResponseEntity.badRequest().build();
         }
 
         // OcrService 호출 (RuntimeException 발생 가능)
-        // OcrService 내부에서 IOException은 RuntimeException으로 변환됨
+        // OcrService 내부에서 IOException은 RuntimeException으로 변환
         byte[] audioData = ocrService.getAudioFromImage(imageFile);
 
         // OcrService가 null을 반환한 경우 (AI 서버가 204 응답)

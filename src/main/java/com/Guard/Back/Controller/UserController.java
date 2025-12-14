@@ -33,7 +33,7 @@ public class UserController {
 
         String currentUserType = authentication.getAuthorities().stream()
                 .findFirst()
-                .map(auth -> auth.getAuthority().replace("ROLE_", "")) // "ROLE_" 접두사 제거
+                .map(auth -> auth.getAuthority().replace("ROLE_", ""))
                 .orElse(null);
 
         log.info("[사용자 정보 조회] 사용자 ID: {}, 역할: {}의 정보 조회를 요청했습니다.", currentUserId, currentUserType);
@@ -43,8 +43,8 @@ public class UserController {
     }
 
     /**
-     * 현재 로그인한 사용자의 계정을 탈퇴시킵니다.
-     * 연관된 모든 관계, 리프레시 토큰 등이 함께 삭제됩니다.
+     * 현재 로그인한 사용자의 계정을 탈퇴
+     * 연관된 모든 관계, 리프레시 토큰 등이 함께 삭제
      *
      * @param authentication 현재 로그인한 사용자의 인증 정보.
      * @return 성공 메시지.
@@ -53,10 +53,9 @@ public class UserController {
     public ResponseEntity<String> deleteAccount(Authentication authentication) {
         Long currentUserId = Long.parseLong(authentication.getName());
 
-        // 💡 [수정] JwtTokenProvider 변경에 따라 getCredentials() 대신 getAuthorities()를 사용합니다.
         String currentUserRoleKey = authentication.getAuthorities().stream()
                 .findFirst()
-                .map(auth -> auth.getAuthority()) // "ROLE_GUARDIAN"
+                .map(auth -> auth.getAuthority())
                 .orElse(null);
 
         log.info("[회원 탈퇴] 사용자 ID: {} (역할: {})가 계정 삭제를 요청했습니다.", currentUserId, currentUserRoleKey);
@@ -75,7 +74,7 @@ public class UserController {
     }
 
     /**
-     * 현재 로그인한 보호자의 FCM 디바이스 토큰을 갱신합니다.
+     * 현재 로그인한 보호자의 FCM 디바이스 토큰을 갱신
      *
      * @param fcmTokenMap    요청 DTO. {"fcmToken": "..."} 형식의 JSON.
      * @param authentication 현재 로그인한 보호자의 인증 정보.

@@ -19,7 +19,7 @@ public class Relationship {
 
     /**
      * 관계의 주체인 보호자.
-     * User 엔티티와 다대일(N:1) 관계를 맺습니다.
+     * User 엔티티와 다대일(N:1) 관계
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "guardian_id")
@@ -27,7 +27,7 @@ public class Relationship {
 
     /**
      * 관계의 대상인 피보호자.
-     * ProtectedUser 엔티티와 다대일(N:1) 관계를 맺습니다.
+     * ProtectedUser 엔티티와 다대일(N:1) 관계
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "protected_user_id")

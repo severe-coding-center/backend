@@ -18,7 +18,7 @@ import java.util.Date;
 /*JWT(Access Token, Refresh Token)의 생성, 검증, 정보 추출을 담당하는 핵심 클래스.*/
 @Component
 @RequiredArgsConstructor
-@Slf4j // 💡 로깅을 위한 어노테이션 추가
+@Slf4j
 public class JwtTokenProvider {
 
     @Value("${jwt.secret}")
@@ -28,8 +28,8 @@ public class JwtTokenProvider {
     private final long REFRESH_TOKEN_VALID_TIME = 1000L * 60 * 60 * 24 * 30; // 30일
 
     /**
-     * 객체 초기화 시, application.properties의 secretKey를 사용하여 HMAC-SHA 키 객체를 생성합니다.
-     * 이 키는 모든 토큰의 서명에 사용됩니다.
+     * 객체 초기화 시, application.properties의 secretKey를 사용하여 HMAC-SHA 키 객체를 생성
+     * 이 키는 모든 토큰의 서명에 사용
      */
     @PostConstruct
     protected void init() {
@@ -37,7 +37,7 @@ public class JwtTokenProvider {
     }
 
     /**
-     * Access Token을 생성합니다.
+     * Access Token을 생성
      * @param userId   토큰의 주인이 될 사용자의 ID.
      * @param userRole 사용자의 역할 (GUARDIAN 또는 PROTECTED).
      * @return 생성된 Access Token 문자열.
@@ -58,8 +58,8 @@ public class JwtTokenProvider {
     }
 
     /**
-     * Refresh Token을 생성합니다.
-     * Refresh Token에는 사용자 정보를 담지 않아 보안을 강화합니다.
+     * Refresh Token을 생성
+     * Refresh Token에는 사용자 정보를 담지 않아 보안을 강화
      * @return 생성된 Refresh Token 문자열.
      */
     public String createRefreshToken() {
@@ -72,7 +72,7 @@ public class JwtTokenProvider {
     }
 
     /**
-     * 유효한 Access Token에서 Spring Security가 사용할 Authentication 객체를 생성하여 반환합니다.
+     * 유효한 Access Token에서 Spring Security가 사용할 Authentication 객체를 생성하여 반환
      * @param token 검증된 Access Token.
      * @return 사용자의 ID와 권한 정보가 담긴 Authentication 객체.
      */
@@ -88,7 +88,7 @@ public class JwtTokenProvider {
     }
 
     /**
-     * 토큰의 유효성 및 만료일자를 검증합니다.
+     * 토큰의 유효성 및 만료일자를 검증
      * @param token 검증할 토큰.
      * @return 유효하면 true, 아니면 false.
      */
@@ -103,7 +103,7 @@ public class JwtTokenProvider {
     }
 
     /**
-     * 토큰에서 사용자 ID(subject)를 추출합니다.
+     * 토큰에서 사용자 ID(subject)를 추출
      * @param token 정보를 추출할 토큰.
      * @return 사용자 ID (Long).
      */
@@ -113,7 +113,7 @@ public class JwtTokenProvider {
 
     /**
      * 토큰을 파싱하여 클레임(토큰에 담긴 정보)을 추출하는 private 헬퍼 메소드.
-     * 코드 중복을 방지하고 일관된 파싱 로직을 제공합니다.
+     * 코드 중복을 방지하고 일관된 파싱 로직을 제공
      * @param token 파싱할 토큰.
      * @return 토큰의 클레임 정보.
      */

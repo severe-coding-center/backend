@@ -26,8 +26,8 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     /**
-     * 특정 보호자 계정을 탈퇴시킵니다.
-     * 연관된 모든 관계, 리프레시 토큰이 함께 삭제됩니다.
+     * 특정 보호자 계정을 탈퇴
+     * 연관된 모든 관계, 리프레시 토큰이 함께 삭제
      *
      * @param guardianId 삭제할 보호자의 ID.
      * @throws CustomException 보호자가 존재하지 않을 경우 발생.
@@ -52,8 +52,8 @@ public class UserService {
     }
 
     /**
-     * 특정 피보호자 계정을 탈퇴시킵니다.
-     * 연관된 모든 관계, 리프레시 토큰, 위치 기록이 함께 삭제됩니다. (위치 기록은 Cascade 설정에 의해 자동 삭제됨)
+     * 특정 피보호자 계정을 탈퇴
+     * 연관된 모든 관계, 리프레시 토큰, 위치 기록이 함께 삭제. (위치 기록은 Cascade 설정에 의해 자동 삭제됨)
      *
      * @param protectedUserId 삭제할 피보호자의 ID.
      * @throws CustomException 피보호자가 존재하지 않을 경우 발생.
@@ -78,8 +78,8 @@ public class UserService {
     }
 
     /**
-     * 현재 로그인한 사용자의 정보를 조회합니다.
-     * 보호자의 경우, 연결된 피보호자의 ID를 함께 반환합니다.
+     * 현재 로그인한 사용자의 정보를 조회
+     * 보호자의 경우, 연결된 피보호자의 ID를 함께 반환
      *
      * @param userId   정보를 조회할 사용자의 ID.
      * @param userType 사용자의 역할 ("GUARDIAN" 또는 "PROTECTED").
@@ -88,7 +88,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public UserInfoDto getUserInfo(Long userId, String userType) {
-        if ("GUARDIAN".equals(userType)) {
+        if ("GUARDIAN".equals(userType) || "ADMIN".equals(userType)) {
             log.info("[사용자 정보 조회] 보호자 ID: {}의 정보 조회를 시작합니다.", userId);
             User guardian = userRepository.findById(userId)
                     .orElseThrow(() -> new com.Guard.Back.Exception.CustomException(com.Guard.Back.Exception.ErrorCode.GUARDIAN_NOT_FOUND));
@@ -101,18 +101,18 @@ public class UserService {
             return UserInfoDto.builder()
                     .userId(guardian.getId())
                     .nickname(guardian.getNickname())
-                    .userType("GUARDIAN")
+                    .userType(userType)
                     .linkedUserId(linkedProtectedUserId)
                     .build();
         } else {
-            // 보호자가 아닌 경우, 이 API를 통해 정보를 조회할 수 없습니다.
+            // 보호자가 아닌 경우, 이 API를 통해 정보 조회 X
             log.warn("[사용자 정보 조회] 권한 없음! 보호자가 아닌 사용자(ID: {}, 역할: {})가 정보 조회를 시도했습니다.", userId, userType);
             throw new com.Guard.Back.Exception.CustomException(com.Guard.Back.Exception.ErrorCode.UNAUTHORIZED_ACCESS);
         }
     }
 
     /**
-     * 보호자의 FCM 토큰을 찾아 갱신합니다.
+     * 보호자의 FCM 토큰을 찾아 갱신
      * @param guardianId 토큰을 갱신할 보호자의 ID.
      * @param fcmToken   새로운 FCM 토큰.
      */

@@ -3,7 +3,7 @@ package com.Guard.Back.Service;
 import com.Guard.Back.Domain.ProtectedUser;
 import com.Guard.Back.Repository.ProtectedUserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j; // 💡 Slf4j 임포트 추가
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
@@ -17,9 +17,9 @@ public class ProtectedUserService {
     private final ProtectedUserRepository protectedUserRepository;
 
     /**
-     * 기기 ID를 기반으로 피보호자를 등록하거나 로그인 처리합니다.
+     * 기기 ID를 기반으로 피보호자를 등록하거나 로그인 처리
      * DB에 기기 ID가 존재하면 기존 사용자를 반환하고(로그인),
-     * 존재하지 않으면 새로운 사용자를 생성하여 저장합니다(등록).
+     * 존재하지 않으면 새로운 사용자를 생성하여 저장(등록).
      *
      * @param deviceId 앱에서 전달받은 기기 고유 ID
      * @return 기존 사용자 또는 새로 생성된 사용자 엔티티

@@ -23,14 +23,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
     /**
-     * [추가된 로직] 이 필터가 실행되면 안 되는 경로를 지정합니다.
-     * SecurityConfig에서 permitAll()로 설정된 공용 경로는 토큰 검사를 건너뜁니다.
+     * 이 필터가 실행되면 안 되는 경로를 지정
+     * SecurityConfig에서 permitAll()로 설정된 공용 경로는 토큰 검사 X
      */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
 
-        // SecurityConfig와 동일하게 공용 경로를 제외합니다.
+        // SecurityConfig와 동일하게 공용 경로를 제외
         return path.startsWith("/oauth2") ||
                 path.startsWith("/api/auth") ||
                 path.startsWith("/api/protected/register") ||

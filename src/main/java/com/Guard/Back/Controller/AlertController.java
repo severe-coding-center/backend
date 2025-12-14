@@ -19,8 +19,8 @@ public class AlertController {
     private final AlertService alertService;
 
     /**
-     * 특정 피보호자의 모든 알림 기록을 최신순으로 조회합니다.
-     * SecurityConfig에 의해 GUARDIAN 역할만 접근 가능합니다.
+     * 특정 피보호자의 모든 알림 기록을 최신순으로 조회
+     * SecurityConfig에 의해 GUARDIAN, ADMIN 역할만 접근 가능.
      *
      * @param protectedUserId 기록을 조회할 피보호자의 ID.
      * @param authentication  현재 로그인한 보호자의 인증 정보.
@@ -29,12 +29,12 @@ public class AlertController {
     @GetMapping("/{protectedUserId}")
     public ResponseEntity<List<AlertLogDto>> getAlertLogs(
             @PathVariable Long protectedUserId,
-            Authentication authentication) { // 💡 Authentication 파라미터 추가
+            Authentication authentication) {
 
-        // 💡 [수정] 현재 로그인한 보호자 ID를 인증 정보에서 추출합니다.
+        // 현재 로그인한 보호자 ID를 인증 정보에서 추출
         Long guardianId = Long.parseLong(authentication.getName());
 
-        // 💡 [수정] 서비스 호출 시 두 개의 인자(protectedUserId, guardianId)를 모두 전달합니다.
+        // 서비스 호출 시 두 개의 인자(protectedUserId, guardianId)를 전달
         List<AlertLogDto> logs = alertService.getAlertLogs(protectedUserId, guardianId);
         return ResponseEntity.ok(logs);
     }

@@ -26,8 +26,8 @@ public class AlertLog {
 
     private String message; // e.g., "SOS 호출이 있었습니다.", "안심 구역을 벗어났습니다."
 
-    @CreationTimestamp // 👈 어노테이션 추가
-    @Column(updatable = false, nullable = false) // 👈 속성 변경: 한번 생성되면 수정 불가
+    @CreationTimestamp
+    @Column(updatable = false, nullable = false)
     private ZonedDateTime eventTime;
 
     // 이벤트 발생 당시의 위치 정보 (선택적)
