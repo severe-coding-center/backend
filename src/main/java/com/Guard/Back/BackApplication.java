@@ -1,8 +1,8 @@
 // BackApplication.java
 package com.Guard.Back;
 
-import jakarta.annotation.PostConstruct; // 👈 import 추가
-import java.util.TimeZone; // 👈 import 추가
+import jakarta.annotation.PostConstruct;
+import java.util.TimeZone;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BackApplication {
 
 	/**
-	 * 애플리케이션 실행 전 시간대를 서울(KST)로 설정합니다.
+	 * 애플리케이션 실행 전 시간대를 서울(KST)로 설정
 	 */
 	@PostConstruct
 	public void started() {
